@@ -1,34 +1,56 @@
 'use client';
 
-import { Project } from '@/types/portfolio';
+import ProjectDetails from '@/components/projects/ProjectDetails';
+import ProjectGrid from '@/components/projects/ProjectGrid';
+import { useState } from 'react';
 
-interface ProjectCardProps {
-  project: Project;
+interface Project {
+  title: string;
+  description: string;
+  imageUrl: string;
+  techStack: string[];
+  projectUrl?: string;
+  githubUrl?: string;
+  challenges?: string[];
+  solutions?: string[];
+  duration?: string;
+  role?: string;
 }
 
-function ProjectCard({ project }: ProjectCardProps) {
-  return (
-    <div className="rounded-lg overflow-hidden transition-transform duration-200 hover:scale-105">
-      <h3 className="text-xl font-bold">{project.title}</h3>
-      <p>{project.description}</p>
-      <div className="flex flex-wrap gap-2 mt-2">
-        {project.technologies.map((tech) => (
-          <span key={tech} className="text-sm">
-            {tech}
-          </span>
-        ))}
-      </div>
-    </div>
-  );
-}
+// Sample data - you can move this to a separate data file later
+const projects: Project[] = [
+  {
+    title: "Sample Project",
+    description: "A brief description of the project goes here",
+    imageUrl: "/path/to/image.jpg",
+    techStack: ["React", "TypeScript", "Tailwind"],
+    projectUrl: "https://example.com",
+    githubUrl: "https://github.com/example"
+  },
+  // Add more projects as needed
+];
 
 export default function Projects() {
+  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+
   return (
     <section id="projects" className="py-20">
       <h2 className="text-3xl font-bold text-center mb-10">Projects</h2>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {/* ProjectCard components will be mapped here */}
-      </div>
+      <ProjectGrid 
+        projects={projects}
+        onProjectSelect={setSelectedProject}
+      />
+
+      {selectedProject && (
+        <div className="fixed inset-0 bg-black/60 flex items-center justify-center p-4 z-50 overflow-y-auto">
+          <div className="w-full max-w-4xl">
+            <ProjectDetails
+              {...selectedProject}
+              onClose={() => setSelectedProject(null)}
+            />
+          </div>
+        </div>
+      )}
     </section>
   );
 }
