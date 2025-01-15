@@ -4,7 +4,7 @@ import { FC } from 'react';
 
 const ScrollIndicator: FC = () => {
   const scrollToContent = () => {
-    const projectsSection = document.getElementById('projects');
+    const projectsSection = document.getElementById('about');
     projectsSection?.scrollIntoView({ behavior: 'smooth' });
   };
 

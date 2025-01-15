@@ -5,17 +5,19 @@ import Header from '@/components/layout/Header';
 import Experience from '@/components/sections/Experience';
 import Contact from '@/components/sections/Contact';
 import Footer from '@/components/layout/Footer';
+import AboutSection from '@/components/sections/About';
 
 export default function Home() {
   return (
     <>
       <Header />
       <main className="bg-gray-900 text-gray-100">
-        <Hero />
-        <Projects />
-        <SkillsSection />
-        <Experience />
-        <Contact />
+          <Hero />
+          <AboutSection />
+          <Projects />
+          <SkillsSection />
+          <Experience />
+          <Contact />
       </main>
       <Footer />
     </>

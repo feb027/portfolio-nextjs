@@ -7,9 +7,9 @@ import SocialLinks from '../hero/SocialLinks';
 import ScrollIndicator from '../hero/ScrollIndicator';
 
 const SOCIAL_LINKS = [
-  { name: 'GitHub', url: 'https://github.com/yourusername', icon: '🐱' },
-  { name: 'LinkedIn', url: 'https://linkedin.com/in/yourusername', icon: '💼' },
-  { name: 'Twitter', url: 'https://twitter.com/yourusername', icon: '🐦' },
+  { name: 'GitHub', url: 'https://github.com/yourusername', icon: '󰊤' },
+  { name: 'LinkedIn', url: 'https://linkedin.com/in/yourusername', icon: '󰌻' },
+  { name: 'Twitter', url: 'https://twitter.com/yourusername', icon: '󰕄' },
 ];
 
 const Hero: FC = () => {
@@ -19,7 +19,7 @@ const Hero: FC = () => {
       
       <div className="container mx-auto px-4">
         <HeroTitle
-          name="Your Name"
+          name="Febnawan Fatur Rochman"
           role="Full Stack Developer"
           tagline="Building beautiful and performant web applications with modern technologies"
         />
