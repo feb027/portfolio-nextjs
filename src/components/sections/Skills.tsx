@@ -63,7 +63,18 @@ const SkillsSection: FC = () => {
 
   return (
     <section id="skills" className="py-20 min-h-screen">
-      <div className="container mx-auto px-4 max-w-5xl"> {/* Increased from max-w-4xl */}
+      <div className="container mx-auto px-4 max-w-5xl"> 
+        {/* Section title with code-like decoration */}
+        <div className="text-center mb-16">
+          <div className="inline-block">
+            <span className="text-code-gray font-mono text-sm mb-2 block">// SKILLS</span>
+            <h2 className="text-4xl font-mono text-code-white relative">
+              <span className="text-neon-blue">&lt;</span>
+              Skill
+              <span className="text-neon-blue">/&gt;</span>
+            </h2>
+          </div>
+        </div>
         {/* IDE-style Header */}
         <div className="flex items-center gap-4 mb-8">
           <div className="text-neon-blue font-mono text-sm"> {/* Reduced text size */}
