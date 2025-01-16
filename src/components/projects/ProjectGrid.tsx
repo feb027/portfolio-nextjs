@@ -23,7 +23,7 @@ interface ProjectGridProps {
 const ProjectGrid: FC<ProjectGridProps> = ({ 
   projects, 
   onProjectSelect, 
-  projectsPerPage = 6 
+  projectsPerPage = 3 
 }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const totalPages = Math.ceil(projects.length / projectsPerPage);

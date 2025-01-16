@@ -43,7 +43,7 @@ export const AboutImage: FC = () => {
         {/* Image with glitch effect */}
         <div className="h-full pt-8 relative">
           <Image
-            src="/photo.JPG" 
+            src="/sparkle.JPG" 
             alt="Developer profile"
             width={500}
             height={500}

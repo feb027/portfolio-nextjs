@@ -18,77 +18,125 @@ const ProjectCard: FC<ProjectCardProps> = ({
   projectUrl,
   githubUrl
 }) => {
+  const truncateDescription = (text: string, maxLength: number = 100) => {
+    return text.length > maxLength ? `${text.substring(0, maxLength)}...` : text;
+  };
+
   return (
-    <article className="group relative overflow-hidden rounded-lg bg-terminal-dark border border-terminal-border transition-all duration-300 hover:border-neon-blue/30 animate-border-glow">
-      {/* Terminal-like header */}
-      <div className="absolute top-0 left-0 right-0 h-6 bg-terminal flex items-center px-4 border-b border-terminal-border">
+    <article className="group relative overflow-hidden rounded-lg bg-terminal-darker border border-terminal-border hover:shadow-neon transition-all duration-500 hover:border-neon-blue/30">
+      {/* Terminal Window Header */}
+      <div className="absolute top-0 left-0 right-0 h-8 bg-terminal-dark flex items-center justify-between px-4 border-b border-terminal-border">
         <div className="flex gap-1.5">
-          <div className="w-2.5 h-2.5 rounded-full bg-red-500/70"></div>
-          <div className="w-2.5 h-2.5 rounded-full bg-yellow-500/70"></div>
-          <div className="w-2.5 h-2.5 rounded-full bg-green-500/70"></div>
+          <div className="w-3 h-3 rounded-full bg-red-500/70"></div>
+          <div className="w-3 h-3 rounded-full bg-yellow-500/70"></div>
+          <div className="w-3 h-3 rounded-full bg-green-500/70"></div>
+        </div>
+        <div className="flex items-center gap-2 font-mono text-xs">
+          <span className="text-code-gray">~/projects/</span>
+          <span className="text-neon-blue">{title.toLowerCase().replace(/\s+/g, '-')}</span>
+          <span className="text-code-gray">.tsx</span>
         </div>
       </div>
 
-      {/* Project Image with Overlay */}
-      <div className="aspect-video relative mt-6">
-        <div className="absolute inset-0 bg-scanline opacity-5 pointer-events-none" />
+      {/* Project Image with Effects */}
+      <div className="relative mt-8 aspect-video overflow-hidden">
+        <div className="absolute inset-0 bg-scanline opacity-10 pointer-events-none animate-scanline" />
         <Image
           src={imageUrl}
           alt={`${title} project thumbnail`}
           fill
-          className="object-cover transition-transform duration-300 group-hover:scale-105"
+          className="object-cover transition-all duration-500 group-hover:scale-105"
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
         />
+        <div className="absolute inset-0 bg-gradient-to-t from-terminal-darker via-terminal-darker/60 to-transparent" />
+        
+        {/* Code-like image overlay */}
+        <div className="absolute bottom-0 left-0 right-0 p-2 bg-terminal-dark/90 font-mono text-xs text-code-gray">
+          <span className="text-neon-purple">import</span>{' '}
+          <span className="text-neon-blue">thumbnail</span>{' '}
+          <span className="text-code-gray">from</span>{' '}
+          <span className="text-code-white">'./assets/images'</span>
+        </div>
       </div>
 
       {/* Content Container */}
-      <div className="p-6 bg-terminal-darker/30 backdrop-blur-sm">
-        {/* Title with code decoration */}
-        <h3 className="font-mono text-xl text-code-white group-hover:text-neon-blue transition-colors duration-300">
-          <span className="text-neon-purple opacity-70">const</span>{' '}
-          {title}{' '}
-          <span className="text-neon-cyan opacity-70">=</span>
-        </h3>
-
-        {/* Description */}
-        <p className="mt-3 text-code-gray font-sans leading-relaxed">
-          {description}
-        </p>
-        
-        {/* Tech Stack */}
-        <div className="mt-4 flex flex-wrap gap-2">
-          {techStack.map((tech) => (
-            <span
-              key={tech}
-              className="rounded-md bg-terminal-light/30 px-3 py-1 text-sm font-mono text-neon-blue border border-terminal-border"
-            >
-              {tech}
-            </span>
+      <div className="p-6 bg-terminal-darker/90 backdrop-blur-sm relative">
+        {/* Line numbers */}
+        <div className="absolute left-2 top-6 bottom-6 w-6 font-mono text-xs text-code-gray opacity-40 select-none flex flex-col items-end">
+          {Array.from({ length: 10 }, (_, i) => (
+            <div key={i} className="leading-6">{i + 1}</div>
           ))}
         </div>
 
-        {/* Links */}
-        <div className="mt-6 flex gap-4 font-mono text-sm">
-          {projectUrl && (
-            <a
-              href={projectUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 text-neon-blue hover:text-neon-active transition-colors duration-300"
-            >
-              <span className="text-neon-purple">&gt;</span> Demo
-            </a>
-          )}
-          {githubUrl && (
-            <a
-              href={githubUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 text-neon-blue hover:text-neon-active transition-colors duration-300"
-            >
-              <span className="text-neon-purple">&gt;</span> Code
-            </a>
-          )}
+        <div className="ml-8 border-l border-terminal-border pl-4">
+          {/* Code-style Title */}
+          <div className="font-mono space-y-1">
+            <div className="text-code-gray text-sm">
+              <span className="text-neon-purple">class</span>{' '}
+              <span className="text-neon-blue">{title}</span>{' '}
+              <span className="text-code-gray">extends</span>{' '}
+              <span className="text-neon-cyan">Project</span>{' '}
+              <span className="text-code-gray">{'{'}</span>
+            </div>
+          </div>
+
+          {/* Description with code styling */}
+          <div className="mt-3 pl-4">
+            <p className="text-code-gray font-mono text-sm leading-6">
+              <span className="text-neon-purple">description</span>
+              <span className="text-code-gray">{' = '}</span>
+              <span className="text-code-white">"{truncateDescription(description)}"</span>
+            </p>
+          </div>
+          
+          {/* Tech Stack */}
+          <div className="mt-4 font-mono">
+            <span className="text-neon-purple">stack</span>
+            <span className="text-code-gray">{' = ['}</span>
+            <div className="mt-2 pl-4 flex flex-wrap gap-2">
+              {techStack.map((tech) => (
+                <span
+                  key={tech}
+                  className="px-2 py-1 bg-terminal-light/10 rounded text-neon-cyan text-xs border border-terminal-border group-hover:border-neon-blue/30 transition-colors duration-300"
+                >
+                  {tech}
+                </span>
+              ))}
+            </div>
+            <span className="text-code-gray">{']'}</span>
+          </div>
+
+          {/* Links */}
+          <div className="mt-6 flex items-center gap-3 pt-4 border-t border-terminal-border">
+            <div className="text-xs text-code-gray font-mono">// Actions:</div>
+            <div className="flex gap-2">
+              {projectUrl && (
+                <a
+                  href={projectUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-3 py-1.5 bg-neon-blue/10 rounded text-neon-blue text-xs font-mono border border-neon-blue/20 hover:bg-neon-blue/20 transition-colors duration-300"
+                >
+                  demo()
+                </a>
+              )}
+              {githubUrl && (
+                <a
+                  href={githubUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-3 py-1.5 bg-terminal-light/10 rounded text-code-white text-xs font-mono border border-terminal-border hover:bg-terminal-light/20 transition-colors duration-300"
+                >
+                  code()
+                </a>
+              )}
+            </div>
+          </div>
+        </div>
+        
+        {/* View Details Indicator */}
+        <div className="absolute bottom-3 right-3 text-xs font-mono text-code-gray opacity-60 group-hover:text-neon-blue group-hover:opacity-100 transition-all duration-300">
+          Click to expand...
         </div>
       </div>
     </article>
