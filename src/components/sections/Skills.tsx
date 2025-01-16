@@ -26,9 +26,19 @@ const SKILL_CATEGORIES: SkillCategory[] = [
 
 const SkillsSection: FC = () => {
   return (
-    <section id="skills" className="py-20">
+    <section id="skills" className="py-20 min-h-screen flex flex-col">
       <div className="container mx-auto px-4">
-        <h2 className="text-3xl font-bold text-center mb-10">Skills</h2>
+        {/* Section title with code-like decoration */}
+      <div className="text-center mb-16">
+          <div className="inline-block">
+            <span className="text-code-gray font-mono text-sm mb-2 block">// SKILLS</span>
+            <h2 className="text-4xl font-mono text-code-white relative">
+              <span className="text-neon-blue">&lt;</span>
+              Skills
+              <span className="text-neon-blue">/&gt;</span>
+            </h2>
+          </div>
+        </div>
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {SKILL_CATEGORIES.map((category) => (
