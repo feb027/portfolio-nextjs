@@ -77,10 +77,6 @@ export default {
           '0%, 100%': { opacity: '1' },
           '50%': { opacity: '.5' },
         },
-        glow: {
-          '0%': { textShadow: '0 0 0px rgb(96 165 250 / 0.0)' },
-          '100%': { textShadow: '0 0 10px rgb(96 165 250 / 0.3)' }
-        },
         'soft-pulse': {
           '0%, 100%': { opacity: '1' },
           '50%': { opacity: '0.8' },
