@@ -89,7 +89,13 @@ export default {
       boxShadow: {
         'terminal': '0 0 0 1px rgba(96, 165, 250, 0.05), 0 2px 4px rgba(96, 165, 250, 0.1)',
         'neon': '0 0 20px rgba(96, 165, 250, 0.3)',
-      }
+      },
+      backgroundImage: {
+        'scanline': 'linear-gradient(to bottom, transparent 50%, rgba(0, 0, 0, 0.5) 50%)',
+      },
+      backgroundSize: {
+        'scanline': '100% 4px',
+      },
     },
   },
   plugins: [],

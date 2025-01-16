@@ -2,27 +2,51 @@ import { FC } from 'react';
 
 export const AboutContent: FC = () => {
   return (
-    <div className="space-y-6">
-      <h2 className="text-3xl font-bold text-white mb-4">
-        About Me
-      </h2>
-      <div className="prose prose-invert">
-        <p className="text-gray-300 leading-relaxed">
-          I am a passionate Full Stack Developer with experience in building web applications
-          using modern technologies. My journey in software development started with a
-          curiosity about how things work on the internet, which led me to dive deep
-          into web technologies.
-        </p>
-        <p className="text-gray-300 leading-relaxed">
-          I specialize in JavaScript/TypeScript and work with frameworks like React,
-          Next.js, and Node.js. I'm passionate about creating efficient, scalable, and
-          maintainable code while delivering exceptional user experiences.
-        </p>
-        <p className="text-gray-300 leading-relaxed">
-          When I'm not coding, I enjoy staying up-to-date with the latest technology
-          trends, contributing to open-source projects, and sharing knowledge with
-          the developer community.
-        </p>
+    <div className="bg-terminal-dark p-6 rounded-lg border border-terminal-border shadow-terminal animate-border-glow">
+      <div className="flex items-center mb-4 text-neon-blue">
+        <span className="text-sm font-mono">const</span>
+        <h2 className="text-2xl font-mono ml-2">Developer = {`{`}</h2>
+      </div>
+
+      <div className="pl-4 space-y-4 font-mono">
+        <div className="group">
+          <span className="text-neon-purple">name:</span>
+          <span className="text-code-white ml-2">Febnawan Fatur Rochman</span>
+          <span className="text-terminal-light">,</span>
+        </div>
+
+        <div className="group">
+          <span className="text-neon-purple">role:</span>
+          <span className="text-code-white ml-2">Full Stack Developer</span>
+          <span className="text-terminal-light">,</span>
+        </div>
+
+        <div className="group">
+          <span className="text-neon-purple">description:</span>
+          <div className="pl-4 text-code-gray">
+            <p className="my-2">
+              Transforming complex problems into elegant solutions through clean, 
+              efficient code. Specialized in building modern web applications 
+              with TypeScript and React ecosystem.
+            </p>
+            <p className="my-2">
+              Currently exploring the intersection of performance optimization 
+              and user experience while maintaining scalable architectures.
+            </p>
+          </div>
+        </div>
+
+        <div className="group">
+          <span className="text-neon-purple">skills:</span>
+          <div className="pl-4 text-neon-cyan">
+            [TypeScript, React, Next.js, Node.js, AWS]
+          </div>
+        </div>
+      </div>
+
+      <div className="mt-4 font-mono text-terminal-light">
+        {`}`}
+        <span className="animate-cursor-blink">|</span>
       </div>
     </div>
   );
