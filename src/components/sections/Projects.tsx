@@ -27,6 +27,7 @@ const projects: Project[] = [
     projectUrl: "https://example.com",
     githubUrl: "https://github.com/example"
   },
+  
   // Add more projects as needed
 ];
 
@@ -34,7 +35,7 @@ export default function Projects() {
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
 
   return (
-    <section id="projects" className="py-20">
+    <section id="projects" className="py-20 min-h-screen flex flex-col">
       {/* Section title with code-like decoration */}
       <div className="text-center mb-16">
           <div className="inline-block">
@@ -46,11 +47,17 @@ export default function Projects() {
             </h2>
           </div>
         </div>
-      <ProjectGrid 
-        projects={projects}
-        onProjectSelect={setSelectedProject}
-      />
 
+      {/* Projects Grid with pagination */}
+      <div className="flex-grow">
+        <ProjectGrid 
+          projects={projects}
+          onProjectSelect={setSelectedProject}
+          projectsPerPage={6}
+        />
+      </div>
+
+      {/* Modal */}
       {selectedProject && (
         <div className="fixed inset-0 bg-black/60 flex items-center justify-center p-4 z-50 overflow-y-auto">
           <div className="w-full max-w-4xl">
