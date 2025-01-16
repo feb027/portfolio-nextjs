@@ -35,7 +35,17 @@ export default function Projects() {
 
   return (
     <section id="projects" className="py-20">
-      <h2 className="text-3xl font-bold text-center mb-10">Projects</h2>
+      {/* Section title with code-like decoration */}
+      <div className="text-center mb-16">
+          <div className="inline-block">
+            <span className="text-code-gray font-mono text-sm mb-2 block">// PROJECTS</span>
+            <h2 className="text-4xl font-mono text-code-white relative">
+              <span className="text-neon-blue">&lt;</span>
+              Project
+              <span className="text-neon-blue">/&gt;</span>
+            </h2>
+          </div>
+        </div>
       <ProjectGrid 
         projects={projects}
         onProjectSelect={setSelectedProject}
