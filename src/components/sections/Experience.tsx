@@ -46,15 +46,19 @@ const Experience: FC = () => {
   const [isLineNumbersVisible, setLineNumbersVisible] = useState(true);
   const [isMiniMapVisible, setMiniMapVisible] = useState(true);
   const [isSidebarOpen, setSidebarOpen] = useState(false);
+  const [windowWidth, setWindowWidth] = useState(0);
   const editorRef = useRef<HTMLDivElement>(null);
 
-  // Hide minimap on mobile by default
+  // Handle window resize and initial width
   useEffect(() => {
     const handleResize = () => {
-      if (window.innerWidth < 768) {
+      const width = window.innerWidth;
+      setWindowWidth(width);
+      if (width < 768) {
         setMiniMapVisible(false);
       }
     };
+    
     handleResize();
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
@@ -102,7 +106,7 @@ const Experience: FC = () => {
         {/* Title Section */}
         <div className="text-center mb-8 md:mb-16">
           <div className="inline-block">
-            <span className="text-code-gray font-mono text-xs md:text-sm mb-2 block">// EXPERIENCE</span>
+            <span className="text-code-gray font-mono text-xs md:text-sm mb-2 block">{'// EXPERIENCE'}</span>
             <h2 className="text-3xl md:text-4xl font-mono text-code-white relative">
               <span className="text-neon-blue">&lt;</span>
               Experience
@@ -210,7 +214,7 @@ const Experience: FC = () => {
 
             {/* Main content area */}
             <div className="col-span-1 md:col-span-9 grid" 
-                 style={{ gridTemplateColumns: `1fr ${isMiniMapVisible && window.innerWidth >= 768 ? '100px' : '0px'}` }}>
+                 style={{ gridTemplateColumns: `1fr ${isMiniMapVisible && windowWidth >= 768 ? '100px' : '0px'}` }}>
               {/* Code content */}
               <div className="p-3 md:p-6 font-mono relative overflow-auto">
                 <AnimatePresence mode="wait">
@@ -288,7 +292,7 @@ const Experience: FC = () => {
               </div>
 
               {/* Minimap - only shown on desktop */}
-              {isMiniMapVisible && window.innerWidth >= 768 && (
+              {isMiniMapVisible && windowWidth >= 768 && (
                 <div className="border-l border-terminal-border bg-terminal-dark/30">
                   <div className="sticky top-0 p-2 max-h-[600px] overflow-hidden">
                     <div className="opacity-80 transform scale-[1]">

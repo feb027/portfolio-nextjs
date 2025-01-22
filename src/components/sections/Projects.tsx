@@ -161,7 +161,7 @@ export default function Projects() {
       {/* Section title with code-like decoration */}
       <div className="text-center mb-16">
           <div className="inline-block">
-            <span className="text-code-gray font-mono text-sm mb-2 block">// PROJECTS</span>
+            <span className="text-code-gray font-mono text-sm mb-2 block">{'// PROJECT'}</span>
             <h2 className="text-4xl font-mono text-code-white relative">
               <span className="text-neon-blue">&lt;</span>
               Project

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, FC } from 'react';
+import { useState, FC } from 'react';
 import { useActiveSection } from '@/hooks/useActiveSection';
 import Logo from '../navigation/Logo';
 import NavLinks from '../navigation/NavLinks';

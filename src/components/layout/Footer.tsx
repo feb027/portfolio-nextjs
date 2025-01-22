@@ -49,7 +49,7 @@ const Footer: FC = () => {
               </h3>
             </div>
             <p className="text-code-syntax-comment font-mono text-sm">
-              /* Building digital experiences with clean, elegant code */
+              Building digital experiences with clean, elegant code
             </p>
             <div className="flex gap-3">
               <TechBadge icon={<SiReact />} name="React" />

@@ -33,7 +33,7 @@ const ProjectCard: FC<ProjectCardProps> = ({
         </div>
         <div className="flex items-center gap-2 font-mono text-xs">
           <span className="text-code-gray">~/projects/</span>
-          <span className="text-neon-blue">{title.toLowerCase().replace(/\s+/g, '-')}</span>
+          <span className="text-neon-blue">{title.toLowerCase().replace(/\s+/g, '&apos;-&apos;')}</span>
           <span className="text-code-gray">.tsx</span>
         </div>
       </div>
@@ -85,7 +85,7 @@ const ProjectCard: FC<ProjectCardProps> = ({
             <p className="text-code-gray font-mono text-sm leading-6">
               <span className="text-neon-purple">description</span>
               <span className="text-code-gray">{' = '}</span>
-              <span className="text-code-white">"{truncateDescription(description)}"</span>
+              <span className="text-code-white">{`"${truncateDescription(description)}"`}</span>
             </p>
           </div>
           
@@ -108,7 +108,7 @@ const ProjectCard: FC<ProjectCardProps> = ({
 
           {/* Links */}
           <div className="mt-6 flex items-center gap-3 pt-4 border-t border-terminal-border">
-            <div className="text-xs text-code-gray font-mono">// Actions:</div>
+            <span className="text-xs text-code-gray font-mono select-none">{'// Actions:'}</span>
             <div className="flex gap-2">
               {projectUrl && (
                 <a

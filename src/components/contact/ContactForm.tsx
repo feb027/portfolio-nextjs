@@ -1,6 +1,6 @@
 'use client';
 
-import { FC, useState, useEffect } from 'react';
+import { FC, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface ContactFormProps {
@@ -58,7 +58,18 @@ const ContactForm: FC<ContactFormProps> = ({ onSubmitSuccess, onSubmitError }) =
 
     if (currentStep === steps.length - 1) {
       try {
-        // Add your form submission logic here
+        const response = await fetch('/api/contact', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(formData),
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to send message');
+        }
+
         onSubmitSuccess?.();
         setHistory(prev => [...prev, {
           prompt: 'Message sent successfully! ✨',
@@ -70,6 +81,11 @@ const ContactForm: FC<ContactFormProps> = ({ onSubmitSuccess, onSubmitError }) =
           setHistory([]);
         }, 3000);
       } catch (error) {
+        const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
+        setHistory(prev => [...prev, {
+          prompt: 'Error sending message:',
+          response: errorMessage
+        }]);
         onSubmitError?.();
       }
     } else {

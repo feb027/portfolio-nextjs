@@ -16,7 +16,7 @@ const AboutSection: FC = () => {
         {/* Section title with code-like decoration */}
         <div className="text-center mb-16">
           <div className="inline-block">
-            <span className="text-code-gray font-mono text-sm mb-2 block">// SECTION</span>
+            <span className="text-code-gray font-mono text-sm mb-2 block">{'// SECTION'}</span>
             <h2 className="text-4xl font-mono text-code-white relative">
               <span className="text-neon-blue">&lt;</span>
               About
@@ -36,10 +36,10 @@ const AboutSection: FC = () => {
 
         {/* Decorative code comments */}
         <div className="absolute bottom-0 left-4 text-code-gray/20 font-mono text-sm hidden lg:block">
-          /** @todo: Implement more features */
+          {'/** @todo: Implement more features */'}
         </div>
         <div className="absolute top-8 right-4 text-code-gray/20 font-mono text-sm hidden lg:block">
-          /* About Section */
+          {'/* About Section */'}
         </div>
       </div>
     </section>

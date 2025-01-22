@@ -1,5 +1,4 @@
 import { FC } from 'react';
-import Link from 'next/link';
 
 export interface NavItem {
   label: string;
@@ -23,7 +22,9 @@ const NavLinks: FC<NavLinksProps> = ({ items, mobile = false, activeSection, onC
     const element = document.querySelector(href);
     if (element) {
       element.scrollIntoView({ behavior: 'smooth' });
-      mobile && onClose?.();
+      if (mobile && onClose) {
+        onClose();
+      }
     }
   };
 

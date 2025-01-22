@@ -29,7 +29,7 @@ const ContactInfo: FC = () => {
 
         {/* Command History */}
         <div className="space-y-2 mb-6 font-mono text-sm">
-          {commandPrompts.map((item, index) => (
+          {commandPrompts.map((item) => (
             <motion.div
               key={item.command}
               initial={{ opacity: 0, x: -10 }}

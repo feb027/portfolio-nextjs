@@ -15,9 +15,9 @@ const Contact: FC = () => {
     <section id="contact" className="py-20 min-h-screen flex flex-col">
       <div className="container mx-auto px-4">
         {/* Section title with code-like decoration */}
-      <div className="text-center mb-16">
+        <div className="text-center mb-16">
           <div className="inline-block">
-            <span className="text-code-gray font-mono text-sm mb-2 block">// CONTACT</span>
+            <span className="text-code-gray font-mono text-sm mb-2 block">{'// CONTACT'}</span>
             <h2 className="text-4xl font-mono text-code-white relative">
               <span className="text-neon-blue">&lt;</span>
               Contact
@@ -28,12 +28,12 @@ const Contact: FC = () => {
         
         <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-12">
           <div>
-            <h3 className="text-xl font-semibold mb-6">Contact Information</h3>
+            <h3 className="text-xl font-semibold mb-6">{'Contact Information'}</h3>
             <ContactInfo />
           </div>
 
           <div>
-            <h3 className="text-xl font-semibold mb-6">Send Me a Message</h3>
+            <h3 className="text-xl font-semibold mb-6">{'Send Me a Message'}</h3>
             {status && (
               <div className="mb-6">
                 <StatusMessage
