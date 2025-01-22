@@ -18,6 +18,15 @@ const NavLinks: FC<NavLinksProps> = ({ items, mobile = false, activeSection, onC
     ? 'flex flex-col space-y-4' 
     : 'hidden md:flex items-center justify-center space-x-6 h-full';
 
+  const handleClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    e.preventDefault();
+    const element = document.querySelector(href);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+      mobile && onClose?.();
+    }
+  };
+
   return (
     <div className={`${baseStyles} w-full`}>
       {items.map((item) => {
@@ -26,7 +35,7 @@ const NavLinks: FC<NavLinksProps> = ({ items, mobile = false, activeSection, onC
           <a
             key={item.href}
             href={item.href}
-            onClick={() => mobile && onClose?.()}
+            onClick={(e) => handleClick(e, item.href)}
             className={`group relative inline-flex items-center justify-center px-3 py-1.5 font-mono text-sm tracking-wide transition-all duration-300
                       hover:text-neon-blue focus:outline-none focus:ring-1 focus:ring-neon-blue/30 rounded
                       ${isActive ? 'text-neon-blue' : 'text-code-gray'}`}

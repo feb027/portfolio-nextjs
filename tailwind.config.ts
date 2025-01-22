@@ -30,6 +30,16 @@ export default {
         'code': {
           'gray': '#94A3B8',
           'white': '#F8FAFC',
+          'bg': '#0D1117',
+          'surface': '#161B22',
+          'accent': '#58A6FF',
+          'syntax': {
+            'string': '#A5D6FF',
+            'keyword': '#FF7B72',
+            'function': '#D2A8FF',
+            'variable': '#79C0FF',
+            'comment': '#8B949E'
+          }
         }
       },
       backgroundOpacity: {
@@ -113,6 +123,8 @@ export default {
       },
       backgroundImage: {
         'scanline': 'linear-gradient(to bottom, transparent 50%, rgba(0, 0, 0, 0.5) 50%)',
+        'code-gradient': 'linear-gradient(135deg, #1a1d24 0%, #0D1117 100%)',
+        'accent-gradient': 'linear-gradient(135deg, #58A6FF 0%, #79C0FF 100%)',
       },
       backgroundSize: {
         'scanline': '100% 4px',

@@ -1,37 +1,18 @@
 'use client';
 
-import { FC, useState, useCallback } from 'react';
+import { FC, useState } from 'react';
 import ContactForm from '../contact/ContactForm';
 import ContactInfo from '../contact/ContactInfo';
-import NotificationContainer from '../ui/NotificationContainer';
+import StatusMessage from '../contact/StatusMessage';
 
 const Contact: FC = () => {
-  const [notifications, setNotifications] = useState<Array<{
-    id: string;
+  const [status, setStatus] = useState<{
     type: 'success' | 'error';
     message: string;
-  }>>([]);
-
-  const addNotification = useCallback((type: 'success' | 'error', message: string) => {
-    const id = Math.random().toString(36).substring(7);
-    setNotifications(prev => [...prev, { id, type, message }]);
-    // Auto-remove notification after 5 seconds
-    setTimeout(() => {
-      removeNotification(id);
-    }, 5000);
-  }, []);
-
-  const removeNotification = useCallback((id: string) => {
-    setNotifications(prev => prev.filter(notification => notification.id !== id));
-  }, []);
+  } | null>(null);
 
   return (
     <section id="contact" className="py-20 min-h-screen flex flex-col">
-      <NotificationContainer
-        notifications={notifications}
-        onClose={removeNotification}
-      />
-      
       <div className="container mx-auto px-4">
         {/* Section title with code-like decoration */}
       <div className="text-center mb-16">
@@ -47,34 +28,33 @@ const Contact: FC = () => {
         
         <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-12">
           <div>
-            <div className="mb-6 font-mono">
-              <span className="text-code-gray text-sm">// Initialize contact details</span>
-              <h3 className="text-xl mt-1">
-                <span className="text-neon-purple">const</span>{' '}
-                <span className="text-neon-blue">contactInfo</span>{' '}
-                <span className="text-code-white">=</span>{' '}
-                <span className="text-code-gray">{'{'}</span>
-              </h3>
-            </div>
+            <h3 className="text-xl font-semibold mb-6">Contact Information</h3>
             <ContactInfo />
           </div>
 
           <div>
-            <div className="mb-6 font-mono">
-              <span className="text-code-gray text-sm">// Start message wizard</span>
-              <h3 className="text-xl mt-1">
-                <span className="text-neon-purple">async function</span>{' '}
-                <span className="text-neon-blue">sendMessage</span>
-                <span className="text-code-white">()</span>{' '}
-                <span className="text-code-gray">{'{'}</span>
-              </h3>
-            </div>
+            <h3 className="text-xl font-semibold mb-6">Send Me a Message</h3>
+            {status && (
+              <div className="mb-6">
+                <StatusMessage
+                  type={status.type}
+                  message={status.message}
+                  onClose={() => setStatus(null)}
+                />
+              </div>
+            )}
             <ContactForm
               onSubmitSuccess={() => 
-                addNotification('success', 'Message sent successfully! I\'ll get back to you soon.')
+                setStatus({
+                  type: 'success',
+                  message: 'Message sent successfully! I\'ll get back to you soon.'
+                })
               }
               onSubmitError={() => 
-                addNotification('error', 'Failed to send message. Please try again.')
+                setStatus({
+                  type: 'error',
+                  message: 'Failed to send message. Please try again.'
+                })
               }
             />
           </div>
