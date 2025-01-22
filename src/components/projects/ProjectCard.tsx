@@ -33,7 +33,7 @@ const ProjectCard: FC<ProjectCardProps> = ({
         </div>
         <div className="flex items-center gap-2 font-mono text-xs">
           <span className="text-code-gray">~/projects/</span>
-          <span className="text-neon-blue">{title.toLowerCase().replace(/\s+/g, '&apos;-&apos;')}</span>
+          <span className="text-neon-blue">{title.toLowerCase().replace(/\s+/g, '-')}</span>
           <span className="text-code-gray">.tsx</span>
         </div>
       </div>
@@ -55,7 +55,7 @@ const ProjectCard: FC<ProjectCardProps> = ({
           <span className="text-neon-purple">import</span>{' '}
           <span className="text-neon-blue">thumbnail</span>{' '}
           <span className="text-code-gray">from</span>{' '}
-          <span className="text-code-white">'./assets/images'</span>
+          <span className="text-code-white">&apos;./assets/images&apos;</span>
         </div>
       </div>
 
