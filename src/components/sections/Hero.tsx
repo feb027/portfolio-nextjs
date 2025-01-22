@@ -16,7 +16,14 @@ const SOCIAL_LINKS = [
 
 const Hero: FC = () => {
   return (
-    <section className="relative min-h-screen flex items-center justify-center">
+    <section 
+      id="hero" 
+      className="min-h-[100vh] flex items-center relative overflow-hidden"
+      style={{
+        marginTop: '-64px', // Adjust this value to match your header height
+        paddingTop: '64px'  // Add padding top to compensate for the margin
+      }}
+    >
       <HeroBackground />
       
       <div className="container mx-auto px-4">

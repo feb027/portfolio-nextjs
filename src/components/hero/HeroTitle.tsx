@@ -27,7 +27,7 @@ const HeroTitle: FC<HeroTitleProps> = ({ name, role, tagline }) => {
         {/* Name with terminal prompt style */}
         <span className="block font-mono text-4xl md:text-6xl font-bold">
           <span className="text-neon-blue">$ </span>
-          <span className="text-code-white animate-text-glow">{typed}</span>
+          <span className="text-code-white ">{typed}</span>
           <span className="inline-block w-3 h-8 md:h-12 bg-neon-blue animate-cursor-blink" />
         </span>
 

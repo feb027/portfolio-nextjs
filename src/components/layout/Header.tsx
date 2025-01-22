@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, FC } from 'react';
 import { useActiveSection } from '@/hooks/useActiveSection';
 import Logo from '../navigation/Logo';
 import NavLinks from '../navigation/NavLinks';
@@ -15,9 +15,16 @@ const NAV_ITEMS = [
   { label: 'Contact', href: '#contact' },
 ];
 
-export default function Header() {
+const Header: FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const activeSection = useActiveSection(NAV_ITEMS.map(item => item.href));
+  const activeSection = useActiveSection(
+    ['#hero', '#about', '#projects', '#skills', '#experience', '#contact'],
+    {
+      defaultSection: '#hero',
+      threshold: 0.6,
+      rootMargin: '-10% 0px'
+    }
+  );
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -79,3 +86,5 @@ export default function Header() {
     </header>
   );
 }
+
+export default Header;

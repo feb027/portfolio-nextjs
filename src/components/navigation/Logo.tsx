@@ -8,7 +8,7 @@ interface LogoProps {
 const Logo: FC<LogoProps> = () => {
   return (
     <Link 
-      href="/" 
+      href="#hero" 
       className="group relative font-mono text-2xl font-bold tracking-tighter"
       aria-label="FFR Logo - Return to Home"
     >

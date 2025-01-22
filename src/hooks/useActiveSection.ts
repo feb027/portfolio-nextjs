@@ -3,50 +3,52 @@ import { useState, useEffect } from 'react';
 interface UseActiveSectionOptions {
   threshold?: number;
   rootMargin?: string;
+  defaultSection?: string;
 }
 
 export const useActiveSection = (
   sectionIds: string[],
   options: UseActiveSectionOptions = {}
 ) => {
-  const [activeSection, setActiveSection] = useState<string>('');
+  const [activeSection, setActiveSection] = useState<string>(options.defaultSection || '#hero');
+  const [isInitialized, setIsInitialized] = useState(false);
 
   useEffect(() => {
-    const observers: IntersectionObserver[] = [];
+    // Ensure we start with hero section
+    setActiveSection('#hero');
     
+    const timer = setTimeout(() => {
+      setIsInitialized(true);
+    }, 1000); // Match with loading screen duration
+    
+    return () => clearTimeout(timer);
+  }, []);
+
+  useEffect(() => {
+    if (!isInitialized) return;
+
     const handleIntersect = (entries: IntersectionObserverEntry[]) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          // Remove '#' from the section id to match with the actual DOM id
-          const sectionId = entry.target.id;
-          setActiveSection(`#${sectionId}`);
-        }
-      });
-    };
+      const visibleSections = entries
+        .filter(entry => entry.isIntersecting && entry.intersectionRatio >= 0.6)
+        .sort((a, b) => b.intersectionRatio - a.intersectionRatio);
 
-    const observerOptions = {
-      threshold: options.threshold || 0.3,
-      rootMargin: options.rootMargin || '-20% 0px -35% 0px'
-    };
-
-    const observer = new IntersectionObserver(handleIntersect, observerOptions);
-
-    // Observe all sections
-    sectionIds.forEach((sectionId) => {
-      // Remove '#' from the section id to match with the actual DOM id
-      const id = sectionId.replace('#', '');
-      const element = document.getElementById(id);
-      if (element) {
-        observer.observe(element);
+      if (visibleSections.length > 0) {
+        setActiveSection(`#${visibleSections[0].target.id}`);
       }
+    };
+
+    const observer = new IntersectionObserver(handleIntersect, {
+      threshold: [0.2, 0.4, 0.6, 0.8],
+      rootMargin: '-10% 0px -10% 0px'
     });
 
-    observers.push(observer);
+    sectionIds.forEach((sectionId) => {
+      const element = document.getElementById(sectionId.replace('#', ''));
+      if (element) observer.observe(element);
+    });
 
-    return () => {
-      observers.forEach((obs) => obs.disconnect());
-    };
-  }, [sectionIds, options]);
+    return () => observer.disconnect();
+  }, [sectionIds, options, isInitialized]);
 
   return activeSection;
 };
