@@ -15,7 +15,7 @@ export const AboutContent: FC = () => {
 
       {/* Code comment */}
       <div className="text-terminal-light font-mono text-sm mb-4">
-        // Developer profile configuration
+        {`// Developer profile configuration`}
       </div>
 
       <div className="flex items-center mb-4 text-neon-blue group">
@@ -31,7 +31,7 @@ export const AboutContent: FC = () => {
         >
           <span className="text-neon-purple">name:</span>
           <span className="text-code-white ml-2 group-hover:text-neon-blue transition-colors">
-            "Febnawan Fatur Rochman"
+            &quot;Febnawan Fatur Rochman&quot;
           </span>
           <span className="text-terminal-light">,</span>
         </div>
@@ -41,7 +41,7 @@ export const AboutContent: FC = () => {
         >
           <span className="text-neon-purple">role:</span>
           <span className="text-code-white ml-2 group-hover:text-neon-blue transition-colors">
-            "Full Stack Developer"
+            &quot;Full Stack Developer&quot;
           </span>
           <span className="text-terminal-light">,</span>
         </div>
@@ -50,9 +50,9 @@ export const AboutContent: FC = () => {
           <span className="text-neon-purple">description:</span>
           <div className="pl-4 text-code-gray">
             <p className="my-2 hover:text-code-white transition-colors duration-300">
-              "Transforming complex problems into elegant solutions through clean, 
+              &quot;Transforming complex problems into elegant solutions through clean, 
               efficient code. Specialized in building modern web applications 
-              with TypeScript and React ecosystem."
+              with TypeScript and React ecosystem.&quot;
             </p>
           </div>
         </div>
@@ -78,7 +78,7 @@ export const AboutContent: FC = () => {
         {`}`}
         <span className="animate-cursor-blink ml-1">|</span>
         <span className="hidden group-hover:inline-block text-xs text-code-gray ml-2 transition-opacity duration-300">
-          // End of profile
+          {`// End of profile`}
         </span>
       </div>
     </div>
