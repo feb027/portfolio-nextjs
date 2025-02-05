@@ -42,7 +42,7 @@ const PrivacyPolicy = () => {
       code: `// AES-256 encryption implementation
 const encryptData = (data) => {
   return crypto.subtle.encrypt(
-    { name: "AES-GCM", iv: window.crypto.getRandomValues() },
+    { name: &quot;AES-GCM&quot;, iv: window.crypto.getRandomValues() },
     key,
     data
   );
@@ -214,10 +214,10 @@ const setCookie = (name, value) => {
                 </p>
                 <div className="ml-4 mt-2 space-y-1">
                   <p className="text-code-gray">
-                    email: <span className="text-code-syntax-string">"febnawanrochman2@gmail.com"</span>,
+                    email: <span className="text-code-syntax-string">&quot;febnawanrochman2@gmail.com&quot;</span>,
                   </p>
                   <p className="text-code-gray">
-                    location: <span className="text-code-syntax-string">"Tasikmalaya, Indonesia"</span>
+                    location: <span className="text-code-syntax-string">&quot;Tasikmalaya, Indonesia&quot;</span>
                   </p>
                 </div>
               </div>

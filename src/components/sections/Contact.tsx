@@ -13,36 +13,6 @@ const Contact: FC = () => {
     message: string;
   } | null>(null);
 
-  // Use in form submissions
-  const handleSubmit = async (data: FormData) => {
-    try {
-      const sanitizedData = {
-        name: DOMPurify.sanitize(data.get('name') as string),
-        email: DOMPurify.sanitize(data.get('email') as string),
-        subject: DOMPurify.sanitize(data.get('subject') as string),
-        message: DOMPurify.sanitize(data.get('message') as string)
-      }
-
-      const response = await fetch('/api/contact', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(sanitizedData)
-      });
-
-      if (!response.ok) throw new Error('Failed to send message');
-
-      setStatus({
-        type: 'success',
-        message: 'Message sent successfully! I\'ll get back to you soon.'
-      });
-    } catch (error) {
-      setStatus({
-        type: 'error',
-        message: 'Failed to send message. Please try again.'
-      });
-    }
-  }
-
   return (
     <section id="contact" className="py-20 min-h-screen flex flex-col">
       <div className="container mx-auto px-4">

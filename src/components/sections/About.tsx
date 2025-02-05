@@ -4,7 +4,7 @@ import { FC } from 'react';
 import Image from 'next/image';
 import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
 import { Code2, GitBranch, GitCommit, Terminal, Cpu, Globe2, GamepadIcon, BrainCircuit, ChevronRight, Sparkles, X } from 'lucide-react';
-import { useState, useCallback } from 'react';
+import { useState } from 'react';
 
 const INTERESTS = [
   { icon: <Cpu size={14} />, label: "Technology & Innovation" },
@@ -292,7 +292,7 @@ const AboutSection: FC = () => {
                 ].map((tab) => (
                   <motion.button
                     key={tab.id}
-                    onClick={() => setActiveTab(tab.id as any)}
+                    onClick={() => setActiveTab(tab.id as 'terminal' | 'identity' | 'interests' | 'expertise')}
                     className={`px-4 py-2 rounded-md border ${
                       activeTab === tab.id 
                         ? 'border-neon-blue/50 text-neon-blue bg-terminal-dark/80' 
@@ -335,10 +335,10 @@ const AboutSection: FC = () => {
                             animate={{ opacity: 1 }}
                             transition={{ delay: 0.2 }}
                           >
-                            "A passionate Computer Science student and Full Stack Developer with a 
+                            &quot;A passionate Computer Science student and Full Stack Developer with a 
                             keen interest in modern web technologies. Currently pursuing my degree 
                             at Siliwangi University while actively developing web applications 
-                            and exploring new technologies."
+                            and exploring new technologies.&quot;
                           </motion.p>
                         </div>
                       </div>
@@ -355,7 +355,7 @@ const AboutSection: FC = () => {
                         <div className="pl-4 space-y-2 font-mono text-sm">
                           <div className="text-code-gray">
                             <span className="text-neon-purple">name:</span>
-                            <span className="ml-2">"Febnawan Fatur Rochman"</span>,
+                            <span className="ml-2">&quot;Febnawan Fatur Rochman&quot;</span>,
                           </div>
                           <div className="text-code-gray">
                             <span className="text-neon-purple">age:</span>
@@ -363,11 +363,11 @@ const AboutSection: FC = () => {
                           </div>
                           <div className="text-code-gray">
                             <span className="text-neon-purple">education:</span>
-                            <span className="ml-2">"Computer Science Student"</span>,
+                            <span className="ml-2">&quot;Computer Science Student&quot;</span>,
                           </div>
                           <div className="text-code-gray">
                             <span className="text-neon-purple">university:</span>
-                            <span className="ml-2">"Siliwangi University"</span>
+                            <span className="ml-2">&quot;Siliwangi University&quot;</span>
                           </div>
                         </div>
                         <div className="font-mono text-code-gray">{'}'}</div>

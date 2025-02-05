@@ -1,9 +1,7 @@
 'use client';
 
 import { FC, useState, useEffect } from 'react';
-import Image from 'next/image';
 import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
-import { ExternalLink, Github } from 'lucide-react';
 import ProjectDetails from '@/components/projects/ProjectDetails';
 import ProjectGrid from '@/components/projects/ProjectGrid';
 
@@ -146,7 +144,6 @@ const projects: Project[] = [
 
 const Projects: FC = () => {
   const { scrollYProgress } = useScroll();
-  const y = useTransform(scrollYProgress, [0, 1], [0, -50]);
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
 
   // Keep the scroll lock effect

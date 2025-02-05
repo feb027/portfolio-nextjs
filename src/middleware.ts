@@ -3,7 +3,7 @@ import type { NextRequest } from 'next/server'
 import rateLimit from 'express-rate-limit'
 import slowDown from 'express-slow-down'
 
-export function middleware(request: NextRequest) {
+export function middleware(_request: NextRequest) {
   const response = NextResponse.next()
 
   // Add security headers

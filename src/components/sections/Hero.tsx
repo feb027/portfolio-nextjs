@@ -114,7 +114,7 @@ const Hero: FC = () => {
                   <span className="text-neon-cyan">const</span>{' '}
                   <span className="text-neon-purple">role</span>{' '}
                   <span className="text-code-white">=</span>{' '}
-                  <span className="text-neon-blue">'Full Stack Developer'</span>
+                  <span className="text-neon-blue">&apos;Full Stack Developer&apos;</span>
                   <span className="text-code-gray">;</span>
                 </div>
                 

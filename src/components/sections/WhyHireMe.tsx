@@ -60,6 +60,10 @@ const WhyHireMe: FC = () => {
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
 
+  // Create transform values outside of the map callback
+  const rotateX = useTransform(mouseY, [0, 300], [2, -2]);
+  const rotateY = useTransform(mouseX, [0, 300], [-2, 2]);
+
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     const rect = e.currentTarget.getBoundingClientRect();
     mouseX.set(e.clientX - rect.left);
@@ -139,125 +143,120 @@ const WhyHireMe: FC = () => {
 
         {/* Content Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-6xl mx-auto">
-          {REASONS.map((reason, index) => {
-            const rotateX = useTransform(mouseY, [0, 300], [2, -2]);
-            const rotateY = useTransform(mouseX, [0, 300], [-2, 2]);
-
-            return (
-              <motion.div
-                key={reason.title}
-                className="group relative"
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.1 }}
+          {REASONS.map((reason, index) => (
+            <motion.div
+              key={reason.title}
+              className="group relative"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: index * 0.1 }}
+            >
+              <motion.div 
+                className={`relative z-10 h-full p-6 bg-terminal-dark/80 backdrop-blur-sm 
+                         border border-terminal-border rounded-lg cursor-pointer
+                         transition-all duration-300 ${activeCard === index ? 'border-neon-blue' : ''}`}
+                onClick={() => setActiveCard(activeCard === index ? null : index)}
+                whileHover={{ scale: 1.02 }}
+                style={{
+                  rotateX,
+                  rotateY,
+                  perspective: 1000,
+                }}
+                animate={{
+                  borderColor: activeCard === index ? 'rgb(56,182,255,0.5)' : 'rgb(75,85,99)',
+                }}
               >
-                <motion.div 
-                  className={`relative z-10 h-full p-6 bg-terminal-dark/80 backdrop-blur-sm 
-                           border border-terminal-border rounded-lg cursor-pointer
-                           transition-all duration-300 ${activeCard === index ? 'border-neon-blue' : ''}`}
-                  onClick={() => setActiveCard(activeCard === index ? null : index)}
-                  whileHover={{ scale: 1.02 }}
-                  style={{
-                    rotateX,
-                    rotateY,
-                    perspective: 1000,
-                  }}
-                  animate={{
-                    borderColor: activeCard === index ? 'rgb(56,182,255,0.5)' : 'rgb(75,85,99)',
-                  }}
-                >
-                  {/* Terminal Header */}
-                  <div className="flex items-center justify-between mb-4">
-                    <div className="flex items-center gap-2">
-                      <div className="flex gap-1.5">
-                        <div className="w-2.5 h-2.5 rounded-full bg-red-500/70" />
-                        <div className="w-2.5 h-2.5 rounded-full bg-yellow-500/70" />
-                        <div className="w-2.5 h-2.5 rounded-full bg-green-500/70" />
-                      </div>
-                      <span className="text-xs text-code-gray font-mono">reason_{index + 1}.tsx</span>
+                {/* Terminal Header */}
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center gap-2">
+                    <div className="flex gap-1.5">
+                      <div className="w-2.5 h-2.5 rounded-full bg-red-500/70" />
+                      <div className="w-2.5 h-2.5 rounded-full bg-yellow-500/70" />
+                      <div className="w-2.5 h-2.5 rounded-full bg-green-500/70" />
                     </div>
-                    <Terminal size={14} className="text-code-gray" />
+                    <span className="text-xs text-code-gray font-mono">reason_{index + 1}.tsx</span>
                   </div>
+                  <Terminal size={14} className="text-code-gray" />
+                </div>
 
-                  {/* Icon */}
-                  <motion.div 
-                    className="w-12 h-12 mb-4 rounded-lg bg-terminal-light/5 
-                              flex items-center justify-center text-neon-blue"
-                    whileHover={{ scale: 1.1, rotate: 5 }}
-                    animate={{ 
-                      rotate: activeCard === index ? [0, 360] : 0,
-                    }}
-                    transition={{ duration: 0.5 }}
-                  >
-                    {reason.icon}
-                  </motion.div>
-
-                  {/* Content */}
-                  <h3 className="text-neon-blue font-mono text-lg mb-2 
-                               group-hover:text-neon-active transition-colors">
-                    {reason.title}
-                  </h3>
-                  
-                  <p className="text-code-gray group-hover:text-code-white 
-                               transition-colors mb-4">
-                    {reason.description}
-                  </p>
-
-                  {/* Expandable Details */}
-                  <AnimatePresence>
-                    {activeCard === index && (
-                      <motion.div
-                        initial={{ opacity: 0, height: 0 }}
-                        animate={{ opacity: 1, height: 'auto' }}
-                        exit={{ opacity: 0, height: 0 }}
-                        className="overflow-hidden"
-                      >
-                        <div className="pt-4 border-t border-terminal-border">
-                          <div className="grid grid-cols-2 gap-2">
-                            {reason.details.map((detail, i) => (
-                              <motion.div
-                                key={detail}
-                                initial={{ opacity: 0, x: -20 }}
-                                animate={{ opacity: 1, x: 0 }}
-                                transition={{ delay: i * 0.1 }}
-                                className="flex items-center gap-2 text-sm font-mono
-                                         text-code-gray hover:text-code-white
-                                         transition-colors"
-                              >
-                                <span className="text-neon-blue">→</span>
-                                {detail}
-                              </motion.div>
-                            ))}
-                          </div>
-                        </div>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-
-                  {/* Add keyboard shortcut hint */}
-                  {activeCard === index && (
-                    <motion.div
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      className="absolute bottom-2 right-2 text-xs text-code-gray"
-                    >
-                      Press <kbd className="px-1 py-0.5 bg-terminal-light/10 rounded">Esc</kbd> to close
-                    </motion.div>
-                  )}
+                {/* Icon */}
+                <motion.div 
+                  className="w-12 h-12 mb-4 rounded-lg bg-terminal-light/5 
+                            flex items-center justify-center text-neon-blue"
+                  whileHover={{ scale: 1.1, rotate: 5 }}
+                  animate={{ 
+                    rotate: activeCard === index ? [0, 360] : 0,
+                  }}
+                  transition={{ duration: 0.5 }}
+                >
+                  {reason.icon}
                 </motion.div>
 
-                {/* Enhanced gradient effect */}
-                <div 
-                  className="absolute inset-0 bg-gradient-conic from-neon-blue/20 via-neon-purple/20 to-neon-blue/20
-                            opacity-0 group-hover:opacity-100 transition-opacity rounded-lg blur-xl"
-                  style={{
-                    transform: `rotate(${index * 90}deg)`,
-                  }}
-                />
+                {/* Content */}
+                <h3 className="text-neon-blue font-mono text-lg mb-2 
+                             group-hover:text-neon-active transition-colors">
+                  {reason.title}
+                </h3>
+                
+                <p className="text-code-gray group-hover:text-code-white 
+                             transition-colors mb-4">
+                  {reason.description}
+                </p>
+
+                {/* Expandable Details */}
+                <AnimatePresence>
+                  {activeCard === index && (
+                    <motion.div
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: 'auto' }}
+                      exit={{ opacity: 0, height: 0 }}
+                      className="overflow-hidden"
+                    >
+                      <div className="pt-4 border-t border-terminal-border">
+                        <div className="grid grid-cols-2 gap-2">
+                          {reason.details.map((detail, i) => (
+                            <motion.div
+                              key={detail}
+                              initial={{ opacity: 0, x: -20 }}
+                              animate={{ opacity: 1, x: 0 }}
+                              transition={{ delay: i * 0.1 }}
+                              className="flex items-center gap-2 text-sm font-mono
+                                       text-code-gray hover:text-code-white
+                                       transition-colors"
+                            >
+                              <span className="text-neon-blue">→</span>
+                              {detail}
+                            </motion.div>
+                          ))}
+                        </div>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+
+                {/* Add keyboard shortcut hint */}
+                {activeCard === index && (
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    className="absolute bottom-2 right-2 text-xs text-code-gray"
+                  >
+                    Press <kbd className="px-1 py-0.5 bg-terminal-light/10 rounded">Esc</kbd> to close
+                  </motion.div>
+                )}
               </motion.div>
-            );
-          })}
+
+              {/* Enhanced gradient effect */}
+              <div 
+                className="absolute inset-0 bg-gradient-conic from-neon-blue/20 via-neon-purple/20 to-neon-blue/20
+                          opacity-0 group-hover:opacity-100 transition-opacity rounded-lg blur-xl"
+                style={{
+                  transform: `rotate(${index * 90}deg)`,
+                }}
+              />
+            </motion.div>
+          ))}
         </div>
 
         {/* Decorative code comment */}

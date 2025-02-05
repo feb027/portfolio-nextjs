@@ -9,7 +9,6 @@ interface ProjectCardProps {
   techStack: string[];
   projectUrl?: string;
   githubUrl?: string;
-  delay?: number;
 }
 
 const ProjectCard: FC<ProjectCardProps> = ({
@@ -19,7 +18,6 @@ const ProjectCard: FC<ProjectCardProps> = ({
   techStack,
   projectUrl,
   githubUrl,
-  delay = 0
 }) => {
   const truncateDescription = (text: string, maxLength: number = 100) => {
     return text.length > maxLength ? `${text.substring(0, maxLength)}...` : text;
