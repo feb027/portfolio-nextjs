@@ -45,7 +45,7 @@ const ProjectGrid: FC<ProjectGridProps> = ({
             tabIndex={0}
             onKeyDown={(e) => e.key === 'Enter' && onProjectSelect(project)}
           >
-            <ProjectCard {...project} delay={idx * 0.1} />
+            <ProjectCard {...project} />
           </div>
         ))}
       </div>
