@@ -42,9 +42,15 @@ export async function POST(request: Request) {
   });
 
   // Add request origin validation
-  const origin = request.headers.get('origin')
-  if (!origin || !origin.includes(process.env.NEXT_PUBLIC_SITE_URL || 'localhost')) {
-    return NextResponse.json({ error: 'Invalid origin' }, { status: 403 })
+  const origin = request.headers.get('origin');
+  const allowedOrigins = [
+    process.env.NEXT_PUBLIC_SITE_URL,
+    process.env.NEXT_PUBLIC_PREVIEW_URL,
+    'http://localhost:3000'
+  ].filter((origin): origin is string => Boolean(origin));
+
+  if (!origin || !allowedOrigins.some(allowed => origin.includes(allowed))) {
+    return NextResponse.json({ error: 'Invalid origin' }, { status: 403 });
   }
 
   if (!process.env.RESEND_API_KEY) {
