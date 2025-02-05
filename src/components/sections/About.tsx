@@ -2,7 +2,7 @@
 
 import { FC } from 'react';
 import Image from 'next/image';
-import { motion, useScroll, AnimatePresence } from 'framer-motion';
+import { motion,  AnimatePresence } from 'framer-motion';
 import { Code2, GitBranch, GitCommit, Terminal, Cpu, Globe2, GamepadIcon, BrainCircuit, ChevronRight, Sparkles, X } from 'lucide-react';
 import { useState } from 'react';
 
