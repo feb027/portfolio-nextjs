@@ -2,7 +2,7 @@
 
 import { FC } from 'react';
 import Image from 'next/image';
-import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
+import { motion, useScroll, AnimatePresence } from 'framer-motion';
 import { Code2, GitBranch, GitCommit, Terminal, Cpu, Globe2, GamepadIcon, BrainCircuit, ChevronRight, Sparkles, X } from 'lucide-react';
 import { useState } from 'react';
 
@@ -79,7 +79,6 @@ const EXPERTISE = [
 ];
 
 const AboutSection: FC = () => {
-  const { scrollYProgress } = useScroll();
   const [activeTab, setActiveTab] = useState<'terminal' | 'identity' | 'interests' | 'expertise'>('terminal');
   const [isImageHovered, setIsImageHovered] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);

@@ -1,7 +1,7 @@
 'use client';
 
 import { FC, useState, useEffect } from 'react';
-import { motion, useScroll, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import ProjectDetails from '@/components/projects/ProjectDetails';
 import ProjectGrid from '@/components/projects/ProjectGrid';
 

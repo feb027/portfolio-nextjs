@@ -1,5 +1,4 @@
 import { NextResponse } from 'next/server'
-import type { NextRequest } from 'next/server'
 import rateLimit from 'express-rate-limit'
 import slowDown from 'express-slow-down'
 
