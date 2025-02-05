@@ -14,12 +14,13 @@ export const useActiveSection = (
   const [isInitialized, setIsInitialized] = useState(false);
 
   useEffect(() => {
-    // Ensure we start with hero section
+    // Force hero section on mount
     setActiveSection('#hero');
+    window.scrollTo({ top: 0, behavior: 'instant' });
     
     const timer = setTimeout(() => {
       setIsInitialized(true);
-    }, 1000); // Match with loading screen duration
+    }, 1800); // Slightly longer than the loading screen duration
     
     return () => clearTimeout(timer);
   }, []);
