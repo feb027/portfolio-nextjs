@@ -5,7 +5,6 @@ import { motion } from 'framer-motion';
 import ContactForm from '../contact/ContactForm';
 import ContactInfo from '../contact/ContactInfo';
 import StatusMessage from '../contact/StatusMessage';
-import DOMPurify from 'dompurify'
 
 const Contact: FC = () => {
   const [status, setStatus] = useState<{

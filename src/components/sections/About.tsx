@@ -84,9 +84,6 @@ const AboutSection: FC = () => {
   const [isImageHovered, setIsImageHovered] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   
-  // Parallax and transform effects
-  const y = useTransform(scrollYProgress, [0, 1], [0, -50]);
-  const opacity = useTransform(scrollYProgress, [0, 0.2, 0.9, 1], [0, 1, 1, 0]);
   
   // Floating animation for decorative elements
   const floatingAnimation = {

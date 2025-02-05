@@ -121,7 +121,7 @@ const setCookie = (name, value) => {
               <p className="text-code-gray font-mono ml-4">
                 <span className="text-neon-cyan">lastUpdated</span>:{' '}
                 <span className="text-code-syntax-string">
-                  "{currentDate}"
+                &quot;{currentDate}&quot;
                 </span>
               </p>
             </motion.div>

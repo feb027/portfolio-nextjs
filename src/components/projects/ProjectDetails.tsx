@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import { FC } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 
 interface ProjectDetailsProps {
   title: string;

@@ -2,7 +2,7 @@
 
 import { FC, useState, useEffect } from 'react';
 import { motion, AnimatePresence, useMotionValue, useTransform } from 'framer-motion';
-import { Code2, Cpu, Globe2, Sparkles, Terminal, ChevronRight, CheckCircle2 } from 'lucide-react';
+import { Code2, Cpu, Globe2, Sparkles, Terminal } from 'lucide-react';
 
 const REASONS = [
   {

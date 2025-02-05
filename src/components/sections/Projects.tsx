@@ -1,7 +1,7 @@
 'use client';
 
 import { FC, useState, useEffect } from 'react';
-import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
+import { motion, useScroll, AnimatePresence } from 'framer-motion';
 import ProjectDetails from '@/components/projects/ProjectDetails';
 import ProjectGrid from '@/components/projects/ProjectGrid';
 
@@ -143,7 +143,6 @@ const projects: Project[] = [
 ];
 
 const Projects: FC = () => {
-  const { scrollYProgress } = useScroll();
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
 
   // Keep the scroll lock effect
