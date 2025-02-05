@@ -1,23 +1,45 @@
-import rateLimit from 'express-rate-limit'
 import { NextResponse } from 'next/server';
 import { Resend } from 'resend';
+import { headers } from 'next/headers';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 const contactEmail = process.env.NEXT_PUBLIC_CONTACT_EMAIL;
 
-// Create rate limiter
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 5 // limit each IP to 5 requests per window
-})
+// Simple in-memory store for rate limiting
+// Note: This will reset when the serverless function cold starts
+const rateLimit = new Map<string, { count: number; timestamp: number }>();
+
+// Rate limit configuration
+const RATE_LIMIT_WINDOW = 15 * 60 * 1000; // 15 minutes
+const MAX_REQUESTS = 5;
 
 export async function POST(request: Request) {
+  // Get IP address from headers
+  const headersList = await headers();
+  const forwardedFor = headersList.get('x-forwarded-for');
+  const ip = forwardedFor?.split(',')[0] || 'unknown';
+  
   // Check rate limit
-  try {
-    await limiter.check(request, 5, 'CONTACT_FORM') // 5 requests per IP
-  } catch {
-    return NextResponse.json({ error: 'Too many requests' }, { status: 429 })
+  const now = Date.now();
+  const userRateLimit = rateLimit.get(ip);
+  
+  if (userRateLimit) {
+    // Clean up old rate limit entries
+    if (now - userRateLimit.timestamp > RATE_LIMIT_WINDOW) {
+      rateLimit.delete(ip);
+    } else if (userRateLimit.count >= MAX_REQUESTS) {
+      return NextResponse.json(
+        { error: 'Too many requests. Please try again later.' },
+        { status: 429 }
+      );
+    }
   }
+
+  // Update rate limit
+  rateLimit.set(ip, {
+    count: (userRateLimit?.count || 0) + 1,
+    timestamp: userRateLimit?.timestamp || now,
+  });
 
   // Add request origin validation
   const origin = request.headers.get('origin')

@@ -49,7 +49,7 @@ const ImageModal: FC<{ isOpen: boolean; onClose: () => void }> = ({ isOpen, onCl
         </div>
         <div className="relative aspect-square">
           <Image
-            src="/sparkle.JPG"
+            src="/photo.JPG"
             alt="Developer profile"
             fill
             className="object-cover"
@@ -218,7 +218,7 @@ const AboutSection: FC = () => {
                 >
                   <div className="pt-8">
                     <Image
-                      src="/sparkle.JPG"
+                      src="/photo.JPG"
                       alt="Developer profile"
                       width={400}
                       height={400}
