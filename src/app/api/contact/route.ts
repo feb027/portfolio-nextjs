@@ -45,11 +45,13 @@ export async function POST(request: Request) {
   const origin = request.headers.get('origin');
   const allowedOrigins = [
     process.env.NEXT_PUBLIC_SITE_URL,
+    `https://www.${process.env.NEXT_PUBLIC_SITE_URL?.replace('https://', '')}`,
     process.env.NEXT_PUBLIC_PREVIEW_URL,
     'http://localhost:3000'
   ].filter((origin): origin is string => Boolean(origin));
 
-  if (!origin || !allowedOrigins.some(allowed => origin.includes(allowed))) {
+  if (!origin || !allowedOrigins.some(allowed => origin === allowed)) {
+    console.log('Invalid origin:', origin); // For debugging
     return NextResponse.json({ error: 'Invalid origin' }, { status: 403 });
   }
 
