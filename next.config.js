@@ -27,7 +27,10 @@ const nextConfig = {
         ]
       }
     ]
-  }
+  },
+
+  // Remove the touch command from build script
+  output: process.env.BUILD_OUTPUT === 'export' ? 'export' : undefined,
 }
 
 module.exports = nextConfig 

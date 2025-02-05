@@ -1,20 +1,20 @@
 import { NextResponse } from 'next/server'
-import rateLimit from 'express-rate-limit'
-import slowDown from 'express-slow-down'
+import type { NextRequest } from 'next/server'
 
-export function middleware() {
+// Store for rate limiting
+const rateLimit = new Map()
+
+// Rate limit settings
+const RATE_LIMIT_WINDOW = 60 * 1000 // 1 minute
+const MAX_REQUESTS = 100 // requests per window
+
+export function middleware(request: NextRequest) {
   const response = NextResponse.next()
-
-  // Add security headers
   const headers = response.headers
   
-  // Prevent XSS attacks
+  // Add security headers
   headers.set('X-XSS-Protection', '1; mode=block')
-  
-  // Prevent clickjacking
   headers.set('X-Frame-Options', 'DENY')
-  
-  // Prevent MIME type sniffing
   headers.set('X-Content-Type-Options', 'nosniff')
   
   // Enable strict CSP
@@ -42,22 +42,37 @@ export function middleware() {
     'camera=(), microphone=(), geolocation=(), interest-cohort=()'
   )
 
+  // Rate limiting
+  const ip = request.headers.get('x-forwarded-for')?.split(',')[0] || 
+            request.headers.get('x-real-ip') || 
+            'anonymous'
+  const now = Date.now()
+  const windowStart = now - RATE_LIMIT_WINDOW
+
+  // Clean up old entries
+  for (const [key, timestamp] of rateLimit.entries()) {
+    if (timestamp < windowStart) {
+      rateLimit.delete(key)
+    }
+  }
+
+  // Count requests in current window
+  const requestCount = [...rateLimit.entries()]
+    .filter(([key, timestamp]) => key.startsWith(ip) && timestamp > windowStart)
+    .length
+
+  if (requestCount >= MAX_REQUESTS) {
+    return NextResponse.json(
+      { error: 'Too Many Requests' },
+      { status: 429, headers: response.headers }
+    )
+  }
+
+  // Record this request
+  rateLimit.set(`${ip}-${now}`, now)
+
   return response
 }
-
-// Add after existing middleware code
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100 // limit each IP to 100 requests per windowMs
-})
-
-const speedLimiter = slowDown({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  delayAfter: 50, // allow 50 requests per 15 minutes, then...
-  delayMs: 500 // begin adding 500ms of delay per request above 100
-})
-
-export { limiter, speedLimiter }
 
 export const config = {
   matcher: '/:path*',
