@@ -103,10 +103,11 @@ const ContactInfo: FC = () => {
                 <ContactCard
                   icon={<FiPhone />}
                   label="Phone"
-                  value="+62 853 144 937"
-                  href="tel:+62853144937"
+                  value="+62 853 144 937 91"
+                  href="tel:+6285314493791"
                 />
               </motion.div>
+
             </motion.div>
             
             <motion.div 
@@ -117,7 +118,7 @@ const ContactInfo: FC = () => {
                 <ContactCard
                   icon={<FiGithub />}
                   label="GitHub"
-                  value="github.com/feb027"
+                  value="feb027"
                   href="https://github.com/feb027"
                 />
               </motion.div>
@@ -125,8 +126,8 @@ const ContactInfo: FC = () => {
                 <ContactCard
                   icon={<FiLinkedin />}
                   label="LinkedIn"
-                  value="linkedin.com/in/feb027"
-                  href="https://linkedin.com/in/feb027"
+                  value="febnawan-fr"
+                  href="https://www.linkedin.com/in/febnawan-fr"
                 />
               </motion.div>
               <motion.div variants={itemVariants}>

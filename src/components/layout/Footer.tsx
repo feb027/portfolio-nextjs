@@ -205,7 +205,7 @@ const Footer: FC = () => {
                 <span className="text-neon-purple">const</span> certificates
               </h3>
               <motion.a
-                href="/certificates"
+                href="/certifications"
                 target="_blank"
                 className="inline-flex items-center gap-3 bg-terminal-light/5 px-6 py-3 rounded-md
                          border border-terminal-border text-code-gray hover:text-neon-blue
