@@ -43,16 +43,28 @@ export async function POST(request: Request) {
 
   // Add request origin validation
   const origin = request.headers.get('origin');
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL?.replace('https://', '').replace('www.', '');
+  
   const allowedOrigins = [
-    process.env.NEXT_PUBLIC_SITE_URL,
-    `https://www.${process.env.NEXT_PUBLIC_SITE_URL?.replace('https://', '')}`,
+    `https://${baseUrl}`,
+    `https://www.${baseUrl}`,
     process.env.NEXT_PUBLIC_PREVIEW_URL,
     'http://localhost:3000'
   ].filter((origin): origin is string => Boolean(origin));
 
+  // Debug logging
+  console.log({
+    receivedOrigin: origin,
+    allowedOrigins,
+    baseUrl,
+    NEXT_PUBLIC_SITE_URL: process.env.NEXT_PUBLIC_SITE_URL
+  });
+
   if (!origin || !allowedOrigins.some(allowed => origin === allowed)) {
-    console.log('Invalid origin:', origin); // For debugging
-    return NextResponse.json({ error: 'Invalid origin' }, { status: 403 });
+    return NextResponse.json({ 
+      error: 'Invalid origin',
+      debug: { origin, allowedOrigins }
+    }, { status: 403 });
   }
 
   if (!process.env.RESEND_API_KEY) {
