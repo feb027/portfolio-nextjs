@@ -1,6 +1,7 @@
 'use client';
 
 import { FC, useState } from 'react';
+import { motion } from 'framer-motion';
 import SkillCategoryCard from '../skills/SkillCategoryCard';
 import { FaReact, FaNodeJs, FaGitAlt, FaDocker, FaLinux, FaAws, FaBrain } from "react-icons/fa";
 import { SiTypescript, SiTailwindcss, SiRedux, SiExpress, SiPostgresql, SiMongodb, SiGithubactions } from "react-icons/si";
@@ -63,55 +64,117 @@ const SkillsSection: FC = () => {
 
   return (
     <section id="skills" className="py-20 min-h-screen">
-      <div className="container mx-auto px-4 max-w-5xl"> 
-        {/* Section title with code-like decoration */}
-        <div className="text-center mb-16">
+      <div className="container mx-auto px-4 max-w-5xl">
+        {/* Enhanced Section Title - Matching Projects section */}
+        <motion.div 
+          className="text-center mb-16"
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+        >
           <div className="inline-block">
-            <span className="text-code-gray font-mono text-sm mb-2 block">{'// SKILLS'}</span>
-            <h2 className="text-4xl font-mono text-code-white relative">
-              <span className="text-neon-blue">&lt;</span>
-              Skill
-              <span className="text-neon-blue">/&gt;</span>
-            </h2>
+            <motion.div
+              initial={{ width: 0 }}
+              whileInView={{ width: '100%' }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+              className="h-px bg-gradient-to-r from-transparent via-neon-blue to-transparent"
+            />
+            <div className="py-4">
+              <span className="text-code-gray font-mono text-sm mb-2 block">{'// SECTION'}</span>
+              <h2 className="text-4xl font-mono text-code-white relative inline-block">
+                <span className="text-neon-blue">&lt;</span>
+                Skills
+                <span className="text-neon-blue">/&gt;</span>
+                
+                {/* Decorative elements */}
+                <motion.div
+                  className="absolute -right-8 top-1/2 w-6 h-px bg-neon-blue/30"
+                  animate={{ width: [0, 24, 0] }}
+                  transition={{ duration: 2, repeat: Infinity }}
+                />
+                <motion.div
+                  className="absolute -left-8 top-1/2 w-6 h-px bg-neon-blue/30"
+                  animate={{ width: [0, 24, 0] }}
+                  transition={{ duration: 2, repeat: Infinity, delay: 1 }}
+                />
+              </h2>
+            </div>
+            <motion.div
+              initial={{ width: 0 }}
+              whileInView={{ width: '100%' }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+              className="h-px bg-gradient-to-r from-transparent via-neon-blue to-transparent"
+            />
           </div>
-        </div>
-        {/* IDE-style Header */}
-        <div className="flex items-center gap-4 mb-8">
-          <div className="text-neon-blue font-mono text-sm"> {/* Reduced text size */}
+        </motion.div>
+
+        {/* Enhanced IDE-style Header */}
+        <motion.div 
+          className="flex items-center gap-4 mb-8"
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, delay: 0.3 }}
+        >
+          <div className="text-neon-blue font-mono text-sm">
             <span className="text-code-gray">const</span> mySkills <span className="text-code-gray">=</span> <span className="text-neon-purple">Developer</span>.<span className="text-neon-cyan">skills</span>
           </div>
-        </div>
+        </motion.div>
 
-        {/* Code Editor Container */}
-        <div className="bg-terminal-darker rounded-lg border border-terminal-border overflow-hidden shadow-lg"> {/* Added shadow */}
-          {/* Tab Bar */}
-          <div className="flex flex-wrap bg-terminal-dark border-b border-terminal-border"> {/* Added flex-wrap */}
-            {Object.entries(SKILL_CATEGORIES).map(([key, category]) => (
-              <button
+        {/* Enhanced Code Editor Container */}
+        <motion.div 
+          className="bg-terminal-darker rounded-lg border border-terminal-border overflow-hidden shadow-lg"
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, delay: 0.4 }}
+        >
+          {/* Enhanced Tab Bar */}
+          <div className="flex flex-wrap bg-terminal-dark border-b border-terminal-border">
+            {Object.entries(SKILL_CATEGORIES).map(([key, category], index) => (
+              <motion.button
                 key={key}
                 onClick={() => setActiveTab(key)}
-                className={`px-3 py-1.5 font-mono text-xs flex items-center gap-2 border-r border-terminal-border transition-colors
+                className={`px-4 py-2 font-mono text-xs flex items-center gap-2 border-r border-terminal-border transition-all duration-300
                   ${activeTab === key 
                     ? 'bg-terminal-darker text-neon-blue border-b-2 border-b-neon-blue' 
                     : 'text-code-gray hover:bg-terminal-darker/50'}`}
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3, delay: index * 0.1 }}
+                whileHover={{ backgroundColor: 'rgba(56, 182, 255, 0.03)' }}
               >
                 {category.filename}
-              </button>
+              </motion.button>
             ))}
           </div>
 
-          {/* Content Area - adjusted padding */}
-          <div className="p-5"> {/* Increased padding for better spacing */}
+          {/* Enhanced Content Area */}
+          <motion.div 
+            className="p-6"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.3 }}
+          >
             {Object.entries(SKILL_CATEGORIES).map(([key, category]) => (
-              <div key={key} className={activeTab === key ? 'block' : 'hidden'}>
+              <motion.div 
+                key={key} 
+                className={activeTab === key ? 'block' : 'hidden'}
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.3 }}
+              >
                 <SkillCategoryCard
                   title={category.title}
                   skills={category.skills}
                 />
-              </div>
+              </motion.div>
             ))}
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
       </div>
     </section>
   );

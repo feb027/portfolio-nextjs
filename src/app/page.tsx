@@ -10,6 +10,9 @@ import Contact from '@/components/sections/Contact';
 import Footer from '@/components/layout/Footer';
 import AboutSection from '@/components/sections/About';
 import InitialLoadingScreen from '@/components/loading/InitialLoadingScreen';
+import WhyHireMe from '@/components/sections/WhyHireMe';
+import Testimonials from '@/components/sections/Testimonials';
+import { ScrollReveal } from '@/components/animations/ScrollReveal';
 
 export default function Home() {
   const [isLoading, setIsLoading] = useState(true);
@@ -29,13 +32,31 @@ export default function Home() {
         <Header />
         <main className="bg-gray-900 text-gray-100">
           <Hero />
-          <AboutSection />
-          <Projects />
-          <SkillsSection />
-          <Experience />
-          <Contact />
+          <ScrollReveal>
+            <AboutSection />
+          </ScrollReveal>
+          <ScrollReveal>
+            <WhyHireMe />
+          </ScrollReveal>
+          <ScrollReveal>
+            <Projects />
+          </ScrollReveal>
+          <ScrollReveal>
+            <SkillsSection />
+          </ScrollReveal>
+          <ScrollReveal>
+            <Experience />
+          </ScrollReveal>
+          <ScrollReveal>
+            <Testimonials />
+          </ScrollReveal>
+          <ScrollReveal>
+            <Contact />
+          </ScrollReveal>
         </main>
-        <Footer />
+        <ScrollReveal>
+          <Footer />
+        </ScrollReveal>
       </div>
     </>
   );

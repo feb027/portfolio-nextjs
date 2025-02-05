@@ -2,17 +2,17 @@ import Link from 'next/link';
 import { FC } from 'react';
 
 interface LogoProps {
-  text?: string;
+  className?: string;
 }
 
-const Logo: FC<LogoProps> = () => {
+const Logo: FC<LogoProps> = ({ className = '' }) => {
   return (
     <Link 
       href="#hero" 
-      className="group relative font-mono text-2xl font-bold tracking-tighter"
+      className={`group relative font-mono text-2xl font-bold tracking-tighter flex justify-center ${className}`}
       aria-label="FFR Logo - Return to Home"
     >
-      <span className="relative inline-block">
+      <span className="relative inline-flex items-center">
         {/* Animated brackets */}
         <span className="absolute -left-4 text-neon-blue/50 transition-all duration-300 
                       group-hover:-translate-x-1 group-hover:text-neon-active">

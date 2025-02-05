@@ -1,5 +1,6 @@
 import Image from 'next/image';
 import { FC } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 interface ProjectDetailsProps {
   title: string;
@@ -29,9 +30,20 @@ const ProjectDetails: FC<ProjectDetailsProps> = ({
   onClose
 }) => {
   return (
-    <article className="bg-terminal-darker border border-terminal-border rounded-lg overflow-hidden shadow-neon relative backdrop-blur-sm max-h-[80vh] w-full">
-      {/* Terminal Header */}
-      <div className="sticky top-0 z-50 h-10 bg-terminal-dark flex items-center px-4 border-b border-terminal-border">
+    <motion.article 
+      className="bg-terminal-darker border border-terminal-border rounded-lg overflow-hidden shadow-neon relative backdrop-blur-sm max-h-[80vh] w-full"
+      initial={{ opacity: 0, scale: 0.9 }}
+      animate={{ opacity: 1, scale: 1 }}
+      exit={{ opacity: 0, scale: 0.9 }}
+      transition={{ duration: 0.3 }}
+    >
+      {/* Enhanced Terminal Header */}
+      <motion.div 
+        className="sticky top-0 z-50 h-10 bg-terminal-dark flex items-center px-4 border-b border-terminal-border"
+        initial={{ y: -20 }}
+        animate={{ y: 0 }}
+        transition={{ delay: 0.2 }}
+      >
         <div className="flex gap-1.5">
           <div className="w-3 h-3 rounded-full bg-red-500/70"></div>
           <div className="w-3 h-3 rounded-full bg-yellow-500/70"></div>
@@ -41,17 +53,23 @@ const ProjectDetails: FC<ProjectDetailsProps> = ({
           project_details.tsx
         </div>
         {onClose && (
-          <button
+          <motion.button
             onClick={onClose}
             className="w-8 h-8 flex items-center justify-center rounded-md bg-terminal-light/20 text-neon-blue hover:bg-terminal-light/40 transition-colors text-xl ml-4"
-            aria-label="Close details"
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.9 }}
           >
             ×
-          </button>
+          </motion.button>
         )}
-      </div>
+      </motion.div>
 
-      <div className="overflow-y-auto" style={{ height: 'calc(80vh - 2.5rem)' }}>
+      <motion.div 
+        className="overflow-y-auto"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.3 }}
+      >
         {/* Project Image */}
         <div className="relative h-[280px] bg-terminal-dark">
           <Image
@@ -67,12 +85,17 @@ const ProjectDetails: FC<ProjectDetailsProps> = ({
 
         {/* Content */}
         <div className="p-6 pb-8 space-y-6">
-          {/* Project Title and Meta */}
-          <div className="border-l-2 border-neon-blue pl-4">
+          {/* Animated sections */}
+          <motion.div 
+            className="border-l-2 border-neon-blue pl-4"
+            initial={{ x: -20, opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            transition={{ delay: 0.4 }}
+          >
             <h2 className="text-2xl font-mono text-code-white">{title}</h2>
             {role && <p className="text-neon-cyan mt-1 font-mono">Role: {role}</p>}
             {duration && <p className="text-code-gray text-sm">Duration: {duration}</p>}
-          </div>
+          </motion.div>
 
           {/* Description */}
           <div className="prose prose-invert max-w-none">
@@ -152,8 +175,8 @@ const ProjectDetails: FC<ProjectDetailsProps> = ({
             )}
           </div>
         </div>
-      </div>
-    </article>
+      </motion.div>
+    </motion.article>
   );
 };
 

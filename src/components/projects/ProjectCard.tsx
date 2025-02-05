@@ -1,5 +1,6 @@
 import Image from 'next/image';
 import { FC } from 'react';
+import { motion } from 'framer-motion';
 
 interface ProjectCardProps {
   title: string;
@@ -8,6 +9,7 @@ interface ProjectCardProps {
   techStack: string[];
   projectUrl?: string;
   githubUrl?: string;
+  delay?: number;
 }
 
 const ProjectCard: FC<ProjectCardProps> = ({
@@ -16,31 +18,43 @@ const ProjectCard: FC<ProjectCardProps> = ({
   imageUrl,
   techStack,
   projectUrl,
-  githubUrl
+  githubUrl,
+  delay = 0
 }) => {
   const truncateDescription = (text: string, maxLength: number = 100) => {
     return text.length > maxLength ? `${text.substring(0, maxLength)}...` : text;
   };
 
   return (
-    <article className="group relative overflow-hidden rounded-lg bg-terminal-darker border border-terminal-border hover:shadow-neon transition-all duration-500 hover:border-neon-blue/30">
-      {/* Terminal Window Header */}
+    <motion.article 
+      className="group relative overflow-hidden rounded-lg bg-terminal-darker border border-terminal-border hover:shadow-neon transition-all duration-500 hover:border-neon-blue/30"
+      whileHover={{ scale: 1.02 }}
+    >
+      {/* Terminal Window Header with animated dots */}
       <div className="absolute top-0 left-0 right-0 h-8 bg-terminal-dark flex items-center justify-between px-4 border-b border-terminal-border">
         <div className="flex gap-1.5">
-          <div className="w-3 h-3 rounded-full bg-red-500/70"></div>
-          <div className="w-3 h-3 rounded-full bg-yellow-500/70"></div>
-          <div className="w-3 h-3 rounded-full bg-green-500/70"></div>
+          {['bg-red-500/70', 'bg-yellow-500/70', 'bg-green-500/70'].map((color, i) => (
+            <motion.div
+              key={color}
+              className={`w-3 h-3 rounded-full ${color}`}
+              whileHover={{ scale: 1.2 }}
+              transition={{ delay: i * 0.1 }}
+            />
+          ))}
         </div>
-        <div className="flex items-center gap-2 font-mono text-xs">
+        <motion.div 
+          className="flex items-center gap-2 font-mono text-xs"
+          whileHover={{ color: 'rgb(56,182,255)' }}
+        >
           <span className="text-code-gray">~/projects/</span>
           <span className="text-neon-blue">{title.toLowerCase().replace(/\s+/g, '-')}</span>
           <span className="text-code-gray">.tsx</span>
-        </div>
+        </motion.div>
       </div>
 
       {/* Project Image with Effects */}
       <div className="relative mt-8 aspect-video overflow-hidden">
-        <div className="absolute inset-0 bg-scanline opacity-10 pointer-events-none animate-scanline" />
+        <div className="absolute inset-0 bg-scanline opacity-10 pointer-events-none" />
         <Image
           src={imageUrl}
           alt={`${title} project thumbnail`}
@@ -134,12 +148,14 @@ const ProjectCard: FC<ProjectCardProps> = ({
           </div>
         </div>
         
-        {/* View Details Indicator */}
-        <div className="absolute bottom-3 right-3 text-xs font-mono text-code-gray opacity-60 group-hover:text-neon-blue group-hover:opacity-100 transition-all duration-300">
-          Click to expand...
+        {/* Enhanced hover indicator */}
+        <div 
+          className="absolute bottom-3 right-3 text-xs font-mono text-code-gray opacity-60"
+        >
+          <span className="group-hover:text-neon-blue transition-colors">Click to expand...</span>
         </div>
       </div>
-    </article>
+    </motion.article>
   );
 };
 
