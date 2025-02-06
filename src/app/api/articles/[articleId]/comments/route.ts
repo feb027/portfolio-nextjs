@@ -1,4 +1,5 @@
-import { NextRequest, NextResponse } from 'next/server';
+import type { NextRequest } from 'next/server';
+import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
@@ -9,12 +10,18 @@ const CommentSchema = z.object({
   parentId: z.string().optional(),
 });
 
+type Props = {
+  params: {
+    articleId: string;
+  };
+};
+
 export async function GET(
-  request: NextRequest,
-  { params }: { params: Record<string, string> }
+  req: NextRequest,
+  props: Props
 ) {
   try {
-    const articleId = params.articleId;
+    const articleId = props.params.articleId;
     if (!articleId) {
       return NextResponse.json({ error: 'Article ID is required' }, { status: 400 });
     }
@@ -55,11 +62,11 @@ export async function GET(
 }
 
 export async function POST(
-  request: NextRequest,
-  { params }: { params: Record<string, string> }
+  req: NextRequest,
+  props: Props
 ) {
   try {
-    const articleId = params.articleId;
+    const articleId = props.params.articleId;
     if (!articleId) {
       return NextResponse.json({ error: 'Article ID is required' }, { status: 400 });
     }
@@ -69,7 +76,7 @@ export async function POST(
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const json = await request.json();
+    const json = await req.json();
     const { content, parentId } = CommentSchema.parse(json);
 
     const comment = await prisma.comment.create({
