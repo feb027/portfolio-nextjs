@@ -6,7 +6,7 @@ import { MDXRemote } from 'next-mdx-remote/rsc';
 import { ComponentProps } from 'react';
 
 interface PageProps {
-  params: { slug: string };
+  params: Promise<{ slug: string }> | { slug: string };
 }
 
 export async function generateStaticParams() {
