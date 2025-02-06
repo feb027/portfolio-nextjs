@@ -9,17 +9,11 @@ const CommentSchema = z.object({
   parentId: z.string().optional(),
 });
 
-type RouteParams = {
-  params: {
-    articleId: string;
-  };
-};
-
 export async function GET(
   _request: NextRequest,
-  { params }: RouteParams
+  context: { params: Promise<{ articleId: string }> }
 ) {
-  const articleId = await params.articleId;
+  const { articleId } = await context.params;
   
   try {
     const comments = await prisma.comment.findMany({
@@ -62,9 +56,9 @@ export async function GET(
 
 export async function POST(
   request: NextRequest,
-  { params }: RouteParams
+  context: { params: Promise<{ articleId: string }> }
 ) {
-  const articleId = await params.articleId;
+  const { articleId } = await context.params;
   
   try {
     const session = await getServerSession(authOptions);

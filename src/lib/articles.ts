@@ -11,8 +11,10 @@ export async function getAllArticles(): Promise<Article[]> {
     .filter(fileName => fileName.endsWith('.mdx'))
     .map(fileName => {
       const slug = fileName.replace(/\.mdx$/, '');
-      return getArticleBySlug(slug);
-    });
+      const article = getArticleBySlug(slug);
+      return article;
+    })
+    .filter((article): article is Article => article !== null);
 
   // Sort articles by date
   return articles.sort((a, b) => {
@@ -24,22 +26,31 @@ export async function getAllArticles(): Promise<Article[]> {
   });
 }
 
-export function getArticleBySlug(slug: string): Article {
-  const fullPath = path.join(articlesDirectory, `${slug}.mdx`);
-  const fileContents = fs.readFileSync(fullPath, 'utf8');
-  const { data, content } = matter(fileContents);
+export function getArticleBySlug(slug: string): Article | null {
+  try {
+    const fullPath = path.join(articlesDirectory, `${slug}.mdx`);
+    if (!fs.existsSync(fullPath)) {
+      return null;
+    }
+    
+    const fileContents = fs.readFileSync(fullPath, 'utf8');
+    const { data, content } = matter(fileContents);
 
-  return {
-    slug,
-    content,
-    title: data.title,
-    description: data.description,
-    date: data.date,
-    author: data.author,
-    tags: data.tags || [],
-    image: data.image,
-    readingTime: calculateReadingTime(content),
-  };
+    return {
+      slug,
+      content,
+      title: data.title,
+      description: data.description,
+      date: data.date,
+      author: data.author,
+      tags: data.tags || [],
+      image: data.image,
+      readingTime: calculateReadingTime(content),
+    };
+  } catch (error) {
+    console.error(`Error reading article ${slug}:`, error);
+    return null;
+  }
 }
 
 function calculateReadingTime(content: string): string {
