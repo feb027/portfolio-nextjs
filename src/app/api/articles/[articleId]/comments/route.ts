@@ -11,15 +11,17 @@ const CommentSchema = z.object({
 
 export async function GET(
   _request: NextRequest,
-  context: { params: Promise<{ articleId: string }> }
+  context: { params: { articleId: string } }
 ) {
-  const { articleId } = await context.params;
-  
   try {
+    if (!context.params?.articleId) {
+      return NextResponse.json({ error: 'Article ID is required' }, { status: 400 });
+    }
+
     const comments = await prisma.comment.findMany({
       where: {
-        articleId,
-        parentId: null, // Only get top-level comments
+        articleId: context.params.articleId,
+        parentId: null,
       },
       include: {
         author: {
@@ -44,13 +46,10 @@ export async function GET(
       },
     });
 
-    return NextResponse.json(comments);
+    return NextResponse.json(comments || []);
   } catch (error) {
     console.error('Error fetching comments:', error);
-    return NextResponse.json(
-      { error: 'Internal Server Error' },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }
 

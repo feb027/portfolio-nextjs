@@ -30,20 +30,23 @@ const Comments: FC<CommentsProps> = ({ articleId }) => {
   const [replyTo, setReplyTo] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  const fetchComments = useCallback(async () => {
-    try {
-      const response = await fetch(`/api/articles/${articleId}/comments`);
-      const data = await response.json();
-      setComments(data);
-    } catch (error) {
-      console.error('Error fetching comments:', error);
-      toast.error('Failed to load comments');
+  useEffect(() => {
+    const fetchComments = async () => {
+      try {
+        const response = await fetch(`/api/articles/${articleId}/comments`);
+        const data = await response.json();
+        setComments(Array.isArray(data) ? data : []);
+      } catch (error) {
+        console.error('Error fetching comments:', error);
+        toast.error('Failed to load comments');
+        setComments([]);
+      }
+    };
+
+    if (articleId) {
+      fetchComments();
     }
   }, [articleId]);
-
-  useEffect(() => {
-    fetchComments();
-  }, [articleId, fetchComments]);
 
   const handleSubmitComment = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -167,7 +170,7 @@ const Comments: FC<CommentsProps> = ({ articleId }) => {
 
       {/* Comments List */}
       <AnimatePresence>
-        {comments.map((comment) => (
+        {Array.isArray(comments) && comments.map((comment) => (
           <CommentItem
             key={comment.id}
             comment={comment}
@@ -176,7 +179,7 @@ const Comments: FC<CommentsProps> = ({ articleId }) => {
         ))}
       </AnimatePresence>
 
-      {comments.length === 0 && (
+      {(!comments || comments.length === 0) && (
         <div className="text-center text-code-gray py-8">
           <MessageSquare className="w-12 h-12 mx-auto mb-4 opacity-50" />
           <p className="font-mono">No comments yet. Be the first to share your thoughts!</p>
