@@ -1,5 +1,5 @@
-import { FC } from 'react';
-import { motion } from 'framer-motion';
+import { FC, useRef, useState } from 'react';
+import { motion, useAnimationControls } from 'framer-motion';
 
 export interface NavItem {
   label: string;
@@ -78,6 +78,52 @@ const NavLinks: FC<NavLinksProps> = ({ items, mobile = false, activeSection, onC
     }
   };
 
+  // Magnetic effect state
+  const [magneticPosition, setMagneticPosition] = useState({ x: 0, y: 0 });
+  const controls = useAnimationControls();
+
+  // Particle effect
+  const generateParticles = (e: React.MouseEvent) => {
+    const particles = Array.from({ length: 3 }).map((_, i) => ({
+      x: (Math.random() - 0.5) * 30,
+      y: -(Math.random() * 20 + 10),
+      opacity: 1,
+      scale: Math.random() * 0.5 + 0.5,
+      rotation: (Math.random() - 0.5) * 360
+    }));
+
+    controls.start((i) => ({
+      x: particles[i].x,
+      y: particles[i].y,
+      opacity: 0,
+      scale: 0,
+      rotation: particles[i].rotation,
+      transition: {
+        duration: 0.6,
+        ease: [0.32, 0.72, 0, 1]
+      }
+    }));
+  };
+
+  // Magnetic hover effect handler
+  const handleMouseMove = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const centerX = rect.left + rect.width / 2;
+    const centerY = rect.top + rect.height / 2;
+    const distanceX = e.clientX - centerX;
+    const distanceY = e.clientY - centerY;
+    const maxDistance = 15;
+
+    setMagneticPosition({
+      x: (distanceX / rect.width) * maxDistance,
+      y: (distanceY / rect.height) * maxDistance
+    });
+  };
+
+  const handleMouseLeave = () => {
+    setMagneticPosition({ x: 0, y: 0 });
+  };
+
   const handleClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
     e.preventDefault();
     const element = document.querySelector(href);
@@ -106,14 +152,18 @@ const NavLinks: FC<NavLinksProps> = ({ items, mobile = false, activeSection, onC
             custom={index}
             href={item.href}
             onClick={(e) => handleClick(e, item.href)}
+            onMouseMove={!mobile ? handleMouseMove : undefined}
+            onMouseLeave={!mobile ? handleMouseLeave : undefined}
             className={`group relative inline-flex items-center justify-center px-3 py-1.5 
                       font-mono text-sm tracking-wide transition-colors
                       hover:text-neon-blue focus:outline-none focus:ring-1 
-                      focus:ring-neon-blue/30 rounded
+                      focus:ring-neon-blue/30 rounded overflow-hidden
                       ${isActive ? 'text-neon-blue' : 'text-code-gray'}
                       ${mobile ? 'text-base py-2' : ''}`}
             animate={{ 
               scale: isActive ? 1.05 : 1,
+              x: !mobile ? magneticPosition.x : 0,
+              y: !mobile ? magneticPosition.y : 0,
               transition: { 
                 type: "spring", 
                 stiffness: 300, 
@@ -122,7 +172,7 @@ const NavLinks: FC<NavLinksProps> = ({ items, mobile = false, activeSection, onC
             }}
             whileHover={{ 
               scale: 1.1,
-              x: mobile ? 10 : 0,
+              x: mobile ? 10 : magneticPosition.x,
               transition: { 
                 type: "spring", 
                 stiffness: 400, 
@@ -137,13 +187,25 @@ const NavLinks: FC<NavLinksProps> = ({ items, mobile = false, activeSection, onC
                 damping: 10 
               }
             }}
+            onMouseEnter={() => !mobile && generateParticles}
           >
-            {/* Glowing background effect */}
+            {/* Particle effects */}
+            {!mobile && Array.from({ length: 3 }).map((_, i) => (
+              <motion.span
+                key={`particle-${i}`}
+                className="absolute w-1 h-1 rounded-full bg-neon-blue/30"
+                initial={{ x: 0, y: 0, opacity: 0, scale: 0 }}
+                animate={controls}
+                custom={i}
+              />
+            ))}
+
+            {/* Enhanced glow effect */}
             <motion.span 
-              className={`absolute inset-0 rounded opacity-0 transition-all duration-300 
-                         bg-gradient-to-r from-neon-blue/10 to-neon-purple/10
+              className={`absolute inset-0 rounded opacity-0
+                         bg-gradient-to-r from-neon-blue/10 via-neon-purple/10 to-neon-blue/10
                          group-hover:opacity-100 blur-[2px] -z-10
-                         ${isActive ? 'opacity-100' : ''}`}
+                         ${isActive ? 'opacity-100 animate-glow-pulse' : ''}`}
               layoutId={`glow-${mobile ? 'mobile' : 'desktop'}-${item.href}`}
             />
             

@@ -6,6 +6,7 @@ import Logo from '../navigation/Logo';
 import MenuButton from '../navigation/MenuButton';
 import dynamic from 'next/dynamic';
 import { motion, useScroll, useTransform } from 'framer-motion';
+import NoiseTexture from '../ui/NoiseTexture';
 
 // Dynamically import MobileMenu
 const MobileMenu = dynamic(() => import('../navigation/MobileMenu'), {
@@ -62,32 +63,55 @@ const Header: FC = () => {
     }
   );
 
+  // Update spring config to be smoother
+  const springConfig = {
+    type: "spring",
+    stiffness: 300, // Reduced from 400
+    damping: 25,    // Reduced from 30
+    mass: 0.5       // Added mass for smoother motion
+  };
+
   return (
     <motion.header 
       style={{ height: headerHeight }}
       className="fixed w-full top-0 z-[100] transition-all duration-300"
+      initial={false}
     >
-      {/* Animated background */}
+      {/* Enhanced Glassmorphism Background */}
       <motion.div 
-        className="absolute inset-0 bg-terminal-dark backdrop-blur-md border-b border-terminal-border"
-        style={{ 
-          opacity: headerBackgroundOpacity,
-          backdropFilter: `blur(${blur}px)`
-        }}
-      />
+        className="absolute inset-0 backdrop-blur-[12px]"
+        style={{ opacity: headerBackgroundOpacity }}
+      >
+        {/* Base layer */}
+        <div className="absolute inset-0 bg-terminal-dark/80" />
+        
+        {/* Gradient overlay */}
+        <div className="absolute inset-0 bg-gradient-to-b from-terminal-darker/40 to-transparent" />
+        
+        {/* Border with enhanced contrast */}
+        <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r 
+                      from-transparent via-terminal-border/80 to-transparent" />
+      </motion.div>
 
-      {/* Scanline effect */}
+      {/* Noise Texture */}
+      <NoiseTexture />
+
+      {/* Enhanced Ambient Glow */}
+      <motion.div 
+        className="absolute inset-0 -z-10"
+        style={{ opacity: headerBackgroundOpacity }}
+      >
+        <div className="absolute inset-0 bg-gradient-to-b from-neon-blue/5 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-r from-neon-purple/5 via-transparent to-neon-blue/5" />
+      </motion.div>
+
+      {/* Enhanced Scanline */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-b from-terminal-darker/5 to-transparent opacity-20 animate-scanline" />
+        <div className="absolute inset-0 bg-[linear-gradient(to_bottom,transparent_50%,rgba(0,0,0,0.1)_50%)] 
+                      bg-[length:100%_4px] animate-scanline opacity-20" />
       </div>
 
-      {/* Ambient glow */}
-      <motion.div 
-        className="absolute inset-0 -z-10 bg-gradient-to-b from-neon-blue/10 via-neon-purple/5 to-transparent blur-[100px]"
-        style={{ opacity: headerBackgroundOpacity }}
-      />
-      
-      <nav className="max-w-7xl mx-auto px-4 lg:px-8 h-full">
+      <nav className="max-w-7xl mx-auto px-4 lg:px-8 h-full relative">
         <div className="flex items-center justify-between h-full">
           {/* Logo */}
           <motion.div style={{ scale: scale }} className="origin-left w-[120px]">
@@ -100,6 +124,9 @@ const Header: FC = () => {
               style={{ scale: scale }}
               className="flex items-center gap-1 bg-terminal-darker/30 backdrop-blur-sm 
                         border border-terminal-border rounded-full p-1 mx-auto"
+              layout
+              layoutRoot // Add this to prevent child layout animations
+              initial={false} // Prevent initial animation
             >
               {NAV_ITEMS.map((item) => (
                 <motion.a
@@ -109,17 +136,31 @@ const Header: FC = () => {
                             ${activeSection === item.href 
                               ? 'text-neon-blue' 
                               : 'text-code-gray hover:text-neon-blue'}`}
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
+                  whileHover={{ 
+                    scale: 1.05,
+                    transition: { duration: 0.2 } 
+                  }}
+                  whileTap={{ 
+                    scale: 0.95,
+                    transition: { duration: 0.1 } 
+                  }}
                 >
                   {activeSection === item.href && (
                     <motion.div
                       layoutId="activeSection"
                       className="absolute inset-0 bg-terminal-light/10 rounded-full"
-                      transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+                      transition={{
+                        type: "spring",
+                        stiffness: 200,
+                        damping: 20,
+                        mass: 0.2
+                      }}
+                      initial={false}
                     />
                   )}
-                  <span className="relative z-10">{item.label}</span>
+                  <span className="relative z-10">
+                    {item.label}
+                  </span>
                 </motion.a>
               ))}
             </motion.div>
@@ -129,16 +170,26 @@ const Header: FC = () => {
           <motion.div 
             style={{ scale: scale }} 
             className="flex items-center gap-4 origin-right"
+            initial={false}
           >
-            <div className={`hidden md:flex items-center gap-2 bg-terminal-darker/30 px-3 py-1 
-                          rounded-full border border-terminal-border transition-all duration-300
-                          ${isScrolled ? 'scale-90' : ''}`}>
+            <motion.div 
+              className={`hidden md:flex items-center gap-2 bg-terminal-darker/30 px-3 py-1 
+                        rounded-full border border-terminal-border`}
+              animate={{
+                scale: isScrolled ? 0.9 : 1
+              }}
+              initial={false}
+              transition={{
+                duration: 0.2,
+                ease: "easeInOut"
+              }}
+            >
               <div className="h-2 w-2 rounded-full bg-neon-blue animate-blink 
                             shadow-[0_0_8px_#60A5FA] ring-1 ring-neon-blue/50" />
               <span className="text-sm font-mono text-code-gray tracking-wider">
                 <span className="text-neon-blue">&gt;</span> online
               </span>
-            </div>
+            </motion.div>
             <MenuButton 
               isOpen={isMenuOpen} 
               onClick={() => setIsMenuOpen(!isMenuOpen)}
