@@ -11,8 +11,8 @@ interface RelatedArticlesProps {
   articles: Article[];
 }
 
-const RelatedArticles: FC<RelatedArticlesProps> = ({ articles }) => {
-  if (articles.length === 0) return null;
+const RelatedArticles: FC<RelatedArticlesProps> = ({ articles = [] }) => {
+  if (!articles || articles.length === 0) return null;
 
   return (
     <div className="border-t border-terminal-border mt-12 pt-8">
@@ -22,7 +22,7 @@ const RelatedArticles: FC<RelatedArticlesProps> = ({ articles }) => {
       </div>
       
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {articles.map((article, index) => (
+        {Array.isArray(articles) && articles.map((article, index) => (
           <motion.div
             key={article.slug}
             initial={{ opacity: 0, y: 20 }}
