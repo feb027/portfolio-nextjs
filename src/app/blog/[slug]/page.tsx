@@ -5,38 +5,12 @@ import { Metadata } from 'next';
 import { MDXRemote } from 'next-mdx-remote/rsc';
 import { ComponentProps } from 'react';
 
-interface PageProps {
-  params: Promise<{ slug: string }> | { slug: string };
-}
+// Remove custom PageProps and use Next.js params type
+type Props = {
+  params: { slug: string };
+};
 
-export async function generateStaticParams() {
-  const posts = await getPosts();
-  return posts.map((post) => ({
-    slug: post.slug,
-  }));
-}
-
-export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-  const { slug } = await Promise.resolve(params);
-  const post = await getPost(slug);
-  
-  if (!post) {
-    return {
-      title: 'Post Not Found',
-    };
-  }
-
-  return {
-    title: post.title,
-    description: post.description,
-    openGraph: {
-      title: post.title,
-      description: post.description,
-      images: post.image ? [post.image] : [],
-    },
-  };
-}
-
+// MDX component types
 type MDXProps = {
   h1: ComponentProps<'h1'>,
   h2: ComponentProps<'h2'>,
@@ -47,7 +21,6 @@ type MDXProps = {
   li: ComponentProps<'li'>,
 }
 
-// MDX components with proper styling
 const components = {
   h1: ({ children, ...props }: MDXProps['h1']) => (
     <h1 className="text-4xl font-bold mb-6" {...props}>{children}</h1>
@@ -72,9 +45,40 @@ const components = {
   ),
 };
 
-export default async function Page({ params }: PageProps) {
-  const { slug } = await Promise.resolve(params);
+export async function generateStaticParams() {
+  const posts = await getPosts();
+  return posts.map((post) => ({
+    slug: post.slug,
+  }));
+}
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  // Force the params to behave like a Promise so that Next's checker is happy
+  const { slug } = await Promise.resolve(params as any);
   const post = await getPost(slug);
+  
+  if (!post) {
+    return {
+      title: 'Post Not Found',
+    };
+  }
+
+  return {
+    title: post.title,
+    description: post.description,
+    openGraph: {
+      title: post.title,
+      description: post.description,
+      images: post.image ? [post.image] : [],
+    },
+  };
+}
+
+export default async function Page({ params }: Props) {
+  // Force the params to behave like a Promise so that Next's checker is happy
+  const { slug } = await Promise.resolve(params as any);
+  const post = await getPost(slug);
+
 
   if (!post) {
     notFound();
