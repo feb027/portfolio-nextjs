@@ -3,6 +3,7 @@ import PostLayout from '@/components/blog/PostLayout';
 import { notFound } from 'next/navigation';
 import { Metadata } from 'next';
 import { MDXRemote } from 'next-mdx-remote/rsc';
+import { ComponentProps } from 'react';
 
 interface PageProps {
   params: { slug: string };
@@ -16,7 +17,8 @@ export async function generateStaticParams() {
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-  const post = await getPost(params.slug);
+  const { slug } = await Promise.resolve(params);
+  const post = await getPost(slug);
   
   if (!post) {
     return {
@@ -35,33 +37,44 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   };
 }
 
+type MDXProps = {
+  h1: ComponentProps<'h1'>,
+  h2: ComponentProps<'h2'>,
+  h3: ComponentProps<'h3'>,
+  p: ComponentProps<'p'>,
+  ul: ComponentProps<'ul'>,
+  ol: ComponentProps<'ol'>,
+  li: ComponentProps<'li'>,
+}
+
 // MDX components with proper styling
 const components = {
-  h1: (props: any) => (
-    <h1 className="text-4xl font-bold mb-6" {...props} />
+  h1: ({ children, ...props }: MDXProps['h1']) => (
+    <h1 className="text-4xl font-bold mb-6" {...props}>{children}</h1>
   ),
-  h2: (props: any) => (
-    <h2 className="text-3xl font-bold mb-4" {...props} />
+  h2: ({ children, ...props }: MDXProps['h2']) => (
+    <h2 className="text-3xl font-bold mb-4" {...props}>{children}</h2>
   ),
-  h3: (props: any) => (
-    <h3 className="text-2xl font-bold mb-3" {...props} />
+  h3: ({ children, ...props }: MDXProps['h3']) => (
+    <h3 className="text-2xl font-bold mb-3" {...props}>{children}</h3>
   ),
-  p: (props: any) => (
-    <p className="mb-4 leading-relaxed" {...props} />
+  p: ({ children, ...props }: MDXProps['p']) => (
+    <p className="mb-4 leading-relaxed" {...props}>{children}</p>
   ),
-  ul: (props: any) => (
-    <ul className="list-disc list-inside mb-4 space-y-2" {...props} />
+  ul: ({ children, ...props }: MDXProps['ul']) => (
+    <ul className="list-disc list-inside mb-4 space-y-2" {...props}>{children}</ul>
   ),
-  ol: (props: any) => (
-    <ol className="list-decimal list-inside mb-4 space-y-2" {...props} />
+  ol: ({ children, ...props }: MDXProps['ol']) => (
+    <ol className="list-decimal list-inside mb-4 space-y-2" {...props}>{children}</ol>
   ),
-  li: (props: any) => (
-    <li className="ml-4" {...props} />
+  li: ({ children, ...props }: MDXProps['li']) => (
+    <li className="ml-4" {...props}>{children}</li>
   ),
 };
 
 export default async function Page({ params }: PageProps) {
-  const post = await getPost(params.slug);
+  const { slug } = await Promise.resolve(params);
+  const post = await getPost(slug);
 
   if (!post) {
     notFound();
