@@ -9,24 +9,19 @@ const CommentSchema = z.object({
   parentId: z.string().optional(),
 });
 
-interface RouteSegment {
-  params: {
-    articleId: string;
-  };
-}
-
 export async function GET(
   request: NextRequest,
-  segment: RouteSegment
+  { params }: { params: Record<string, string> }
 ) {
   try {
-    if (!segment.params?.articleId) {
+    const articleId = params.articleId;
+    if (!articleId) {
       return NextResponse.json({ error: 'Article ID is required' }, { status: 400 });
     }
 
     const comments = await prisma.comment.findMany({
       where: {
-        articleId: segment.params.articleId,
+        articleId,
         parentId: null,
       },
       include: {
@@ -61,10 +56,11 @@ export async function GET(
 
 export async function POST(
   request: NextRequest,
-  segment: RouteSegment
+  { params }: { params: Record<string, string> }
 ) {
   try {
-    if (!segment.params?.articleId) {
+    const articleId = params.articleId;
+    if (!articleId) {
       return NextResponse.json({ error: 'Article ID is required' }, { status: 400 });
     }
 
@@ -79,7 +75,7 @@ export async function POST(
     const comment = await prisma.comment.create({
       data: {
         content,
-        articleId: segment.params.articleId,
+        articleId,
         authorId: session.user.id,
         parentId,
       },
