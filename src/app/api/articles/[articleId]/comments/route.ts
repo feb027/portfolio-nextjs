@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
@@ -10,7 +10,7 @@ const CommentSchema = z.object({
 });
 
 export async function GET(
-  request: Request,
+  request: NextRequest,
   { params }: { params: { articleId: string } }
 ) {
   try {
@@ -53,7 +53,7 @@ export async function GET(
 }
 
 export async function POST(
-  request: Request,
+  request: NextRequest,
   { params }: { params: { articleId: string } }
 ) {
   try {
