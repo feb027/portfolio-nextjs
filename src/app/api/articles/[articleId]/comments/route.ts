@@ -9,18 +9,23 @@ const CommentSchema = z.object({
   parentId: z.string().optional(),
 });
 
+type RouteContext = {
+  params: { articleId: string };
+  searchParams: { [key: string]: string | string[] | undefined };
+};
+
 export async function GET(
   _request: NextRequest,
-  context: { params: { articleId: string } }
+  { params }: RouteContext
 ) {
   try {
-    if (!context.params?.articleId) {
+    if (!params?.articleId) {
       return NextResponse.json({ error: 'Article ID is required' }, { status: 400 });
     }
 
     const comments = await prisma.comment.findMany({
       where: {
-        articleId: context.params.articleId,
+        articleId: params.articleId,
         parentId: null,
       },
       include: {
@@ -55,17 +60,16 @@ export async function GET(
 
 export async function POST(
   request: NextRequest,
-  context: { params: Promise<{ articleId: string }> }
+  { params }: RouteContext
 ) {
-  const { articleId } = await context.params;
-  
   try {
+    if (!params?.articleId) {
+      return NextResponse.json({ error: 'Article ID is required' }, { status: 400 });
+    }
+
     const session = await getServerSession(authOptions);
     if (!session?.user) {
-      return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     const json = await request.json();
@@ -74,7 +78,7 @@ export async function POST(
     const comment = await prisma.comment.create({
       data: {
         content,
-        articleId,
+        articleId: params.articleId,
         authorId: session.user.id,
         parentId,
       },
@@ -91,16 +95,10 @@ export async function POST(
     return NextResponse.json(comment);
   } catch (error) {
     if (error instanceof z.ZodError) {
-      return NextResponse.json(
-        { error: 'Invalid request data' },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'Invalid request data' }, { status: 400 });
     }
     
     console.error('Error creating comment:', error);
-    return NextResponse.json(
-      { error: 'Internal Server Error' },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 } 
