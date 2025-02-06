@@ -66,7 +66,7 @@ const components = {
 };
 
 type Props = {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 };
 
 export async function generateStaticParams() {
@@ -77,7 +77,14 @@ export async function generateStaticParams() {
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const article = getArticleBySlug(params.slug);
+  const { slug } = await params;
+  const article = getArticleBySlug(slug);
+
+  if (!article) {
+    return {
+      title: 'Article Not Found',
+    };
+  }
 
   return {
     title: `${article.title} | FFR Articles`,
@@ -91,7 +98,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function ArticlePage({ params }: Props) {
-  const article = getArticleBySlug(params.slug);
+  const { slug } = await params;
+  const article = getArticleBySlug(slug);
   const allArticles = await getAllArticles();
   
   if (!article) {
@@ -107,13 +115,13 @@ export default async function ArticlePage({ params }: Props) {
   });
 
   // Find prev/next articles
-  const currentIndex = allArticles.findIndex(a => a.slug === params.slug);
+  const currentIndex = allArticles.findIndex(a => a.slug === slug);
   const prevArticle = currentIndex > 0 ? allArticles[currentIndex - 1] : null;
   const nextArticle = currentIndex < allArticles.length - 1 ? allArticles[currentIndex + 1] : null;
 
   // Get related articles
   const relatedArticles = allArticles
-    .filter(a => a.slug !== params.slug && a.tags.some(tag => article.tags.includes(tag)))
+    .filter(a => a.slug !== slug && a.tags.some(tag => article.tags.includes(tag)))
     .slice(0, 3);
 
   return (
@@ -179,7 +187,7 @@ export default async function ArticlePage({ params }: Props) {
         
         <RelatedArticles articles={relatedArticles} />
         
-        <Comments articleId={params.slug} />
+        <Comments articleId={slug} />
       </article>
     </ArticleLayout>
   );

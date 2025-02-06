@@ -9,14 +9,22 @@ const CommentSchema = z.object({
   parentId: z.string().optional(),
 });
 
+type RouteParams = {
+  params: {
+    articleId: string;
+  };
+};
+
 export async function GET(
-  request: NextRequest,
-  { params }: { params: { articleId: string } }
+  _request: NextRequest,
+  { params }: RouteParams
 ) {
+  const articleId = await params.articleId;
+  
   try {
     const comments = await prisma.comment.findMany({
       where: {
-        articleId: params.articleId,
+        articleId,
         parentId: null, // Only get top-level comments
       },
       include: {
@@ -54,8 +62,10 @@ export async function GET(
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: { articleId: string } }
+  { params }: RouteParams
 ) {
+  const articleId = await params.articleId;
+  
   try {
     const session = await getServerSession(authOptions);
     if (!session?.user) {
@@ -71,7 +81,7 @@ export async function POST(
     const comment = await prisma.comment.create({
       data: {
         content,
-        articleId: params.articleId,
+        articleId,
         authorId: session.user.id,
         parentId,
       },
