@@ -1,5 +1,4 @@
-import type { NextRequest } from 'next/server';
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
@@ -10,25 +9,14 @@ const CommentSchema = z.object({
   parentId: z.string().optional(),
 });
 
-type Props = {
-  params: {
-    articleId: string;
-  };
-};
-
 export async function GET(
-  req: NextRequest,
-  props: Props
+  request: NextRequest,
+  { params }: { params: { articleId: string } }
 ) {
   try {
-    const articleId = props.params.articleId;
-    if (!articleId) {
-      return NextResponse.json({ error: 'Article ID is required' }, { status: 400 });
-    }
-
     const comments = await prisma.comment.findMany({
       where: {
-        articleId,
+        articleId: params.articleId,
         parentId: null,
       },
       include: {
@@ -54,35 +42,36 @@ export async function GET(
       },
     });
 
-    return NextResponse.json(comments || []);
+    return NextResponse.json(comments);
   } catch (error) {
     console.error('Error fetching comments:', error);
-    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+    return NextResponse.json(
+      { error: 'Internal Server Error' },
+      { status: 500 }
+    );
   }
 }
 
 export async function POST(
-  req: NextRequest,
-  props: Props
+  request: NextRequest,
+  { params }: { params: { articleId: string } }
 ) {
   try {
-    const articleId = props.params.articleId;
-    if (!articleId) {
-      return NextResponse.json({ error: 'Article ID is required' }, { status: 400 });
-    }
-
     const session = await getServerSession(authOptions);
     if (!session?.user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+      return NextResponse.json(
+        { error: 'Unauthorized' },
+        { status: 401 }
+      );
     }
 
-    const json = await req.json();
+    const json = await request.json();
     const { content, parentId } = CommentSchema.parse(json);
 
     const comment = await prisma.comment.create({
       data: {
         content,
-        articleId,
+        articleId: params.articleId,
         authorId: session.user.id,
         parentId,
       },
@@ -99,10 +88,16 @@ export async function POST(
     return NextResponse.json(comment);
   } catch (error) {
     if (error instanceof z.ZodError) {
-      return NextResponse.json({ error: 'Invalid request data' }, { status: 400 });
+      return NextResponse.json(
+        { error: 'Invalid request data' },
+        { status: 400 }
+      );
     }
     
     console.error('Error creating comment:', error);
-    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+    return NextResponse.json(
+      { error: 'Internal Server Error' },
+      { status: 500 }
+    );
   }
 } 
