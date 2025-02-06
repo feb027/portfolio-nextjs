@@ -4,7 +4,7 @@ import { FC, JSX } from 'react';
 import { motion } from 'framer-motion';
 import {
   FiGithub, FiInstagram, FiLinkedin, FiMail, FiPhone,
-  FiMapPin, FiAward, FiCode, FiHeart, FiPlay
+  FiMapPin, FiAward, FiCode, FiHeart, FiPlay, FiEdit
 } from 'react-icons/fi';
 import Link from 'next/link';
 
@@ -28,6 +28,7 @@ const FOOTER_SECTIONS = [
       { label: 'Experience', href: '#experience' },
       { label: 'Testimonials', href: '#testimonials' },
       { label: 'Contact', href: '#contact' },
+      { label: 'Blog', href: '/blog', icon: <FiEdit /> }  // Add this line
     ] as FooterLink[]
   },
   {

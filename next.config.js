@@ -4,7 +4,7 @@ const nextConfig = {
   poweredByHeader: false, // Remove X-Powered-By header
   
   images: {
-    domains: [], // Add allowed image domains here
+    domains: ['your-image-domain.com'], // Add your image domains here
     formats: ['image/avif', 'image/webp'],
     remotePatterns: [
       {
@@ -33,4 +33,4 @@ const nextConfig = {
   output: process.env.BUILD_OUTPUT === 'export' ? 'export' : undefined,
 }
 
-module.exports = nextConfig 
+module.exports = nextConfig; 

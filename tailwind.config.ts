@@ -64,6 +64,7 @@ export default {
         'grain': 'grain 8s steps(10) infinite',
         'glitch': 'glitch 0.3s linear infinite',
         'matrix-fall': 'matrix-fall 10s linear infinite',
+        'twinkle': 'twinkle 4s ease-in-out infinite',
       },
       keyframes: {
         glow: {
@@ -139,11 +140,26 @@ export default {
         'scanline': 'linear-gradient(to bottom, transparent 50%, rgba(0, 0, 0, 0.5) 50%)',
         'code-gradient': 'linear-gradient(135deg, #1a1d24 0%, #0D1117 100%)',
         'accent-gradient': 'linear-gradient(135deg, #58A6FF 0%, #79C0FF 100%)',
+        'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
       },
       backgroundSize: {
         'scanline': '100% 4px',
       },
+      typography: {
+        DEFAULT: {
+          css: {
+            'code::before': {
+              content: '""'
+            },
+            'code::after': {
+              content: '""'
+            }
+          }
+        }
+      }
     },
   },
-  plugins: [],
+  plugins: [
+    require('@tailwindcss/typography')
+  ],
 } satisfies Config;
