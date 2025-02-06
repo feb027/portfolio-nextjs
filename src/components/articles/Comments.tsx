@@ -1,14 +1,14 @@
 'use client';
 
-import { FC, useState, useEffect } from 'react';
+import { FC, useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { MessageSquare, Send, Reply, Trash2 } from 'lucide-react';
+import { MessageSquare, Send } from 'lucide-react';
 import Image from 'next/image';
 import { useSession, signIn } from 'next-auth/react';
-import { format } from 'date-fns';
 import { toast } from 'sonner';
+import CommentItem from './CommentItem';
 
-interface CommentType {
+export interface CommentType {
   id: string;
   content: string;
   createdAt: string;
@@ -30,11 +30,7 @@ const Comments: FC<CommentsProps> = ({ articleId }) => {
   const [replyTo, setReplyTo] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  useEffect(() => {
-    fetchComments();
-  }, [articleId]);
-
-  const fetchComments = async () => {
+  const fetchComments = useCallback(async () => {
     try {
       const response = await fetch(`/api/articles/${articleId}/comments`);
       const data = await response.json();
@@ -43,7 +39,11 @@ const Comments: FC<CommentsProps> = ({ articleId }) => {
       console.error('Error fetching comments:', error);
       toast.error('Failed to load comments');
     }
-  };
+  }, [articleId]);
+
+  useEffect(() => {
+    fetchComments();
+  }, [articleId, fetchComments]);
 
   const handleSubmitComment = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -172,9 +172,6 @@ const Comments: FC<CommentsProps> = ({ articleId }) => {
             key={comment.id}
             comment={comment}
             onReply={() => setReplyTo(comment.id)}
-            session={session}
-            articleId={articleId}
-            onCommentDeleted={fetchComments}
           />
         ))}
       </AnimatePresence>

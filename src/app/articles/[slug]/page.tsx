@@ -9,37 +9,59 @@ import Comments from '@/components/articles/Comments';
 import { format, parseISO } from 'date-fns';
 import { enUS } from 'date-fns/locale';
 import Image from 'next/image';
-import { MDXRemote } from 'next-mdx-remote/rsc';
 import { compileMDX } from 'next-mdx-remote/rsc';
 
 // MDX components configuration
+interface MDXComponentProps {
+  children: React.ReactNode;
+  className?: string;
+}
+
 const components = {
-  h1: (props: any) => (
-    <h1 className="text-3xl font-bold text-code-white mt-8 mb-4" {...props} />
+  h1: ({ children, ...props }: MDXComponentProps) => (
+    <h1 className="text-3xl font-bold text-code-white mt-8 mb-4" {...props}>
+      {children}
+    </h1>
   ),
-  h2: (props: any) => (
-    <h2 className="text-2xl font-bold text-code-white mt-6 mb-3" {...props} />
+  h2: ({ children, ...props }: MDXComponentProps) => (
+    <h2 className="text-2xl font-bold text-code-white mt-6 mb-3" {...props}>
+      {children}
+    </h2>
   ),
-  h3: (props: any) => (
-    <h3 className="text-xl font-bold text-code-white mt-4 mb-2" {...props} />
+  h3: ({ children, ...props }: MDXComponentProps) => (
+    <h3 className="text-xl font-bold text-code-white mt-4 mb-2" {...props}>
+      {children}
+    </h3>
   ),
-  p: (props: any) => (
-    <p className="text-code-gray mb-4 leading-relaxed" {...props} />
+  p: ({ children, ...props }: MDXComponentProps) => (
+    <p className="text-code-gray mb-4 leading-relaxed" {...props}>
+      {children}
+    </p>
   ),
-  ul: (props: any) => (
-    <ul className="list-disc list-inside space-y-2 mb-4 text-code-gray" {...props} />
+  ul: ({ children, ...props }: MDXComponentProps) => (
+    <ul className="list-disc list-inside space-y-2 mb-4 text-code-gray" {...props}>
+      {children}
+    </ul>
   ),
-  ol: (props: any) => (
-    <ol className="list-decimal list-inside space-y-2 mb-4 text-code-gray" {...props} />
+  ol: ({ children, ...props }: MDXComponentProps) => (
+    <ol className="list-decimal list-inside space-y-2 mb-4 text-code-gray" {...props}>
+      {children}
+    </ol>
   ),
-  li: (props: any) => (
-    <li className="text-code-gray" {...props} />
+  li: ({ children, ...props }: MDXComponentProps) => (
+    <li className="text-code-gray" {...props}>
+      {children}
+    </li>
   ),
-  code: (props: any) => (
-    <code className="bg-terminal-light/10 text-neon-blue px-1.5 py-0.5 rounded" {...props} />
+  code: ({ children, ...props }: MDXComponentProps) => (
+    <code className="bg-terminal-light/10 text-neon-blue px-1.5 py-0.5 rounded" {...props}>
+      {children}
+    </code>
   ),
-  pre: (props: any) => (
-    <pre className="bg-terminal-light/5 p-4 rounded-lg overflow-x-auto mb-4" {...props} />
+  pre: ({ children, ...props }: MDXComponentProps) => (
+    <pre className="bg-terminal-light/5 p-4 rounded-lg overflow-x-auto mb-4" {...props}>
+      {children}
+    </pre>
   ),
 };
 
