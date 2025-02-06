@@ -5,9 +5,9 @@ import { Metadata } from 'next';
 import { MDXRemote } from 'next-mdx-remote/rsc';
 import { ComponentProps } from 'react';
 
-// Remove custom PageProps and use Next.js params type
+// Update Props type to match Next.js 15 async params
 type Props = {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 };
 
 // MDX component types
@@ -53,14 +53,11 @@ export async function generateStaticParams() {
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  // Use type assertion instead of any
-  const { slug } = await Promise.resolve(params as unknown as Promise<{ slug: string }>);
+  const { slug } = await params; // Directly await the Promise
   const post = await getPost(slug);
   
   if (!post) {
-    return {
-      title: 'Post Not Found',
-    };
+    return { title: 'Post Not Found' };
   }
 
   return {
@@ -75,10 +72,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function Page({ params }: Props) {
-  // Use type assertion instead of any
-  const { slug } = await Promise.resolve(params as unknown as Promise<{ slug: string }>);
+  const { slug } = await params; // Directly await the Promise
   const post = await getPost(slug);
-
 
   if (!post) {
     notFound();
@@ -86,7 +81,5 @@ export default async function Page({ params }: Props) {
 
   const content = <MDXRemote source={post.content} components={components} />;
 
-  return (
-    <PostLayout post={post} content={content} />
-  );
+  return <PostLayout post={post} content={content} />;
 } 
