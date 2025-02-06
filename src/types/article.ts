@@ -1,5 +1,3 @@
-import { MDXRemoteSerializeResult } from 'next-mdx-remote';
-
 export interface Article {
   slug: string;
   title: string;
