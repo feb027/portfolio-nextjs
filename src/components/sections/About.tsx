@@ -5,6 +5,8 @@ import Image from 'next/image';
 import { motion,  AnimatePresence } from 'framer-motion';
 import { Code2, GitBranch, GitCommit, Terminal, Cpu, Globe2, GamepadIcon, BrainCircuit, ChevronRight, Sparkles, X } from 'lucide-react';
 import { useState } from 'react';
+import { SiReact, SiNextdotjs, SiTypescript, SiTailwindcss, SiFramer, SiNodedotjs, SiExpress, SiGit } from 'react-icons/si';
+import { VscVscode } from "react-icons/vsc";
 
 const INTERESTS = [
   { icon: <Cpu size={14} />, label: "Technology & Innovation" },
@@ -66,15 +68,27 @@ const ImageModal: FC<{ isOpen: boolean; onClose: () => void }> = ({ isOpen, onCl
 const EXPERTISE = [
   {
     category: "Frontend",
-    skills: ["React", "Next.js", "TypeScript", "Tailwind CSS", "Framer Motion"]
+    skills: [
+      { name: "React", icon: <SiReact className="w-4 h-4" /> },
+      { name: "Next.js", icon: <SiNextdotjs className="w-4 h-4" /> },
+      { name: "TypeScript", icon: <SiTypescript className="w-4 h-4" /> },
+      { name: "Tailwind CSS", icon: <SiTailwindcss className="w-4 h-4" /> },
+      { name: "Framer Motion", icon: <SiFramer className="w-4 h-4" /> }
+    ]
   },
   {
     category: "Backend",
-    skills: ["Node.js", "Express"]
+    skills: [
+      { name: "Node.js", icon: <SiNodedotjs className="w-4 h-4" /> },
+      { name: "Express", icon: <SiExpress className="w-4 h-4" /> }
+    ]
   },
   {
     category: "Tools & Others",
-    skills: ["Git", "VS Code"]
+    skills: [
+      { name: "Git", icon: <SiGit className="w-4 h-4" /> },
+      { name: "VS Code", icon: <VscVscode className="w-4 h-4" /> }
+    ]
   }
 ];
 
@@ -419,18 +433,18 @@ const AboutSection: FC = () => {
                             <div className="grid grid-cols-2 gap-3 pl-4">
                               {category.skills.map((skill, skillIndex) => (
                                 <motion.div
-                                  key={skill}
+                                  key={skill.name}
                                   initial={{ opacity: 0, x: -20 }}
                                   animate={{ opacity: 1, x: 0 }}
                                   transition={{ delay: (index * 0.1) + (skillIndex * 0.05) }}
-                                  className="group flex items-center gap-2 p-2 rounded-md
+                                  className="group flex items-center gap-3 p-2 rounded-md
                                            bg-terminal-light/5 hover:bg-terminal-light/10
                                            transition-colors duration-300"
                                 >
-                                  <span className="text-neon-blue">→</span>
+                                  <span className="text-neon-blue">{skill.icon}</span>
                                   <span className="text-code-gray group-hover:text-code-white 
                                                  transition-colors font-mono text-sm">
-                                    {skill}
+                                    {skill.name}
                                   </span>
                                 </motion.div>
                               ))}
