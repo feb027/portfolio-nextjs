@@ -1,4 +1,4 @@
-import { FC, useRef, useState } from 'react';
+import { FC, useState } from 'react';
 import { motion, useAnimationControls } from 'framer-motion';
 
 export interface NavItem {
@@ -82,29 +82,6 @@ const NavLinks: FC<NavLinksProps> = ({ items, mobile = false, activeSection, onC
   const [magneticPosition, setMagneticPosition] = useState({ x: 0, y: 0 });
   const controls = useAnimationControls();
 
-  // Particle effect
-  const generateParticles = (e: React.MouseEvent) => {
-    const particles = Array.from({ length: 3 }).map((_, i) => ({
-      x: (Math.random() - 0.5) * 30,
-      y: -(Math.random() * 20 + 10),
-      opacity: 1,
-      scale: Math.random() * 0.5 + 0.5,
-      rotation: (Math.random() - 0.5) * 360
-    }));
-
-    controls.start((i) => ({
-      x: particles[i].x,
-      y: particles[i].y,
-      opacity: 0,
-      scale: 0,
-      rotation: particles[i].rotation,
-      transition: {
-        duration: 0.6,
-        ease: [0.32, 0.72, 0, 1]
-      }
-    }));
-  };
-
   // Magnetic hover effect handler
   const handleMouseMove = (e: React.MouseEvent<HTMLAnchorElement>) => {
     const rect = e.currentTarget.getBoundingClientRect();
@@ -187,7 +164,7 @@ const NavLinks: FC<NavLinksProps> = ({ items, mobile = false, activeSection, onC
                 damping: 10 
               }
             }}
-            onMouseEnter={() => !mobile && generateParticles}
+            onMouseEnter={() => !mobile }
           >
             {/* Particle effects */}
             {!mobile && Array.from({ length: 3 }).map((_, i) => (

@@ -43,7 +43,6 @@ const Header: FC = () => {
   const headerBackgroundOpacity = useTransform(scrollY, [0, 50], [0.6, 0.95]);
   const headerHeight = useTransform(scrollY, [0, 50], ['4.5rem', '3.5rem']);
   const scale = useTransform(scrollY, [0, 50], [1, 0.95]);
-  const blur = useTransform(scrollY, [0, 50], [0, 8]);
 
   useEffect(() => {
     const updateScroll = () => {
@@ -62,14 +61,6 @@ const Header: FC = () => {
       rootMargin: '-10% 0px'
     }
   );
-
-  // Update spring config to be smoother
-  const springConfig = {
-    type: "spring",
-    stiffness: 300, // Reduced from 400
-    damping: 25,    // Reduced from 30
-    mass: 0.5       // Added mass for smoother motion
-  };
 
   return (
     <motion.header 
