@@ -351,33 +351,64 @@ const AboutSection: FC = () => {
                             and exploring new technologies.&quot;
                           </motion.p>
                           {/* Add Blog Button */}
-                          <motion.a
-                            href="/blog"
-                            className="inline-flex items-center gap-2 px-4 py-2 bg-terminal-light/5 
-                                      border border-terminal-border rounded-md text-code-gray 
-                                      hover:text-neon-blue hover:border-neon-blue/30 
-                                      transition-all duration-300"
-                            whileHover={{ 
-                              scale: 1.05,
-                              x: 5
-                            }}
-                            whileTap={{ scale: 0.95 }}
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            transition={{ delay: 0.4 }}
-                          >
-                            <span className="font-mono text-sm">Read My Blog</span>
-                            <motion.span
-                              animate={{ x: [0, 5, 0] }}
-                              transition={{ 
-                                duration: 1.5,
-                                repeat: Infinity,
-                                ease: "easeInOut"
+                          <div className="flex gap-3">
+                            <motion.a
+                              href="/blog"
+                              className="inline-flex items-center gap-2 px-4 py-2 bg-terminal-light/5 
+                                        border border-terminal-border rounded-md text-code-gray 
+                                        hover:text-neon-blue hover:border-neon-blue/30 
+                                        transition-all duration-300"
+                              whileHover={{ 
+                                scale: 1.05,
+                                x: 5
                               }}
+                              whileTap={{ scale: 0.95 }}
+                              initial={{ opacity: 0 }}
+                              animate={{ opacity: 1 }}
+                              transition={{ delay: 0.4 }}
                             >
-                              →
-                            </motion.span>
-                          </motion.a>
+                              <span className="font-mono text-sm">Read My Blog</span>
+                              <motion.span
+                                animate={{ x: [0, 5, 0] }}
+                                transition={{ 
+                                  duration: 1.5,
+                                  repeat: Infinity,
+                                  ease: "easeInOut"
+                                }}
+                              >
+                                →
+                              </motion.span>
+                            </motion.a>
+
+                            {/* Add new Articles button */}
+                            <motion.a
+                              href="/articles"
+                              className="inline-flex items-center gap-2 px-4 py-2 bg-terminal-light/5 
+                                        border border-terminal-border rounded-md text-code-gray 
+                                        hover:text-neon-purple hover:border-neon-purple/30 
+                                        transition-all duration-300"
+                              whileHover={{ 
+                                scale: 1.05,
+                                x: 5
+                              }}
+                              whileTap={{ scale: 0.95 }}
+                              initial={{ opacity: 0 }}
+                              animate={{ opacity: 1 }}
+                              transition={{ delay: 0.5 }}
+                            >
+                              <span className="font-mono text-sm">Read Articles</span>
+                              <motion.span
+                                animate={{ x: [0, 5, 0] }}
+                                transition={{ 
+                                  duration: 1.5,
+                                  repeat: Infinity,
+                                  ease: "easeInOut"
+                                }}
+                              >
+                                →
+                              </motion.span>
+                            </motion.a>
+                          </div>
                         </div>
                       </div>
                     )}

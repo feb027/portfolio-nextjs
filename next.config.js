@@ -1,10 +1,18 @@
+const withMDX = require('@next/mdx')({
+  extension: /\.mdx?$/,
+  options: {
+    remarkPlugins: [],
+    rehypePlugins: [],
+  },
+})
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
   poweredByHeader: false, // Remove X-Powered-By header
   
   images: {
-    domains: ['your-image-domain.com'], // Add your image domains here
+    domains: ['localhost'],
     formats: ['image/avif', 'image/webp'],
     remotePatterns: [
       {
@@ -31,6 +39,8 @@ const nextConfig = {
 
   // Remove the touch command from build script
   output: process.env.BUILD_OUTPUT === 'export' ? 'export' : undefined,
+
+  pageExtensions: ['ts', 'tsx', 'js', 'jsx', 'md', 'mdx'],
 }
 
-module.exports = nextConfig; 
+module.exports = withMDX(nextConfig) 
