@@ -1,6 +1,6 @@
 'use client';
 
-import { FC, useState, useEffect } from 'react';
+import { FC, useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MessageSquare, Send } from 'lucide-react';
 import Image from 'next/image';
@@ -30,23 +30,20 @@ const Comments: FC<CommentsProps> = ({ articleId }) => {
   const [replyTo, setReplyTo] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  useEffect(() => {
-    const fetchComments = async () => {
-      try {
-        const response = await fetch(`/api/articles/${articleId}/comments`);
-        const data = await response.json();
-        setComments(Array.isArray(data) ? data : []);
-      } catch (error) {
-        console.error('Error fetching comments:', error);
-        toast.error('Failed to load comments');
-        setComments([]);
-      }
-    };
-
-    if (articleId) {
-      fetchComments();
+  const fetchComments = useCallback(async () => {
+    try {
+      const response = await fetch(`/api/articles/${articleId}/comments`);
+      const data = await response.json();
+      setComments(data);
+    } catch (error) {
+      console.error('Error fetching comments:', error);
+      toast.error('Failed to load comments');
     }
   }, [articleId]);
+
+  useEffect(() => {
+    fetchComments();
+  }, [articleId, fetchComments]);
 
   const handleSubmitComment = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -170,7 +167,7 @@ const Comments: FC<CommentsProps> = ({ articleId }) => {
 
       {/* Comments List */}
       <AnimatePresence>
-        {Array.isArray(comments) && comments.map((comment) => (
+        {comments.map((comment) => (
           <CommentItem
             key={comment.id}
             comment={comment}
@@ -179,7 +176,7 @@ const Comments: FC<CommentsProps> = ({ articleId }) => {
         ))}
       </AnimatePresence>
 
-      {(!comments || comments.length === 0) && (
+      {comments.length === 0 && (
         <div className="text-center text-code-gray py-8">
           <MessageSquare className="w-12 h-12 mx-auto mb-4 opacity-50" />
           <p className="font-mono">No comments yet. Be the first to share your thoughts!</p>
