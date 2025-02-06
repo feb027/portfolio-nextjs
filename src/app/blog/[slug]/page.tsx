@@ -53,8 +53,8 @@ export async function generateStaticParams() {
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  // Force the params to behave like a Promise so that Next's checker is happy
-  const { slug } = await Promise.resolve(params as any);
+  // Use type assertion instead of any
+  const { slug } = await Promise.resolve(params as unknown as Promise<{ slug: string }>);
   const post = await getPost(slug);
   
   if (!post) {
@@ -75,8 +75,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function Page({ params }: Props) {
-  // Force the params to behave like a Promise so that Next's checker is happy
-  const { slug } = await Promise.resolve(params as any);
+  // Use type assertion instead of any
+  const { slug } = await Promise.resolve(params as unknown as Promise<{ slug: string }>);
   const post = await getPost(slug);
 
 
