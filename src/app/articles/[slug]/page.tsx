@@ -78,7 +78,7 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const article = getArticleBySlug(slug);
+  const article = await getArticleBySlug(slug);
 
   if (!article) {
     return {
@@ -99,7 +99,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function ArticlePage({ params }: Props) {
   const { slug } = await params;
-  const article = getArticleBySlug(slug);
+  const article = await getArticleBySlug(slug);
   const allArticles = await getAllArticles();
   
   if (!article) {
@@ -121,7 +121,7 @@ export default async function ArticlePage({ params }: Props) {
 
   // Get related articles
   const relatedArticles = allArticles
-    .filter(a => a.slug !== slug && a.tags.some(tag => article.tags.includes(tag)))
+    .filter(a => a.slug !== slug && a.tags?.some(tag => article.tags?.includes(tag)))
     .slice(0, 3);
 
   return (
@@ -185,7 +185,7 @@ export default async function ArticlePage({ params }: Props) {
           nextArticle={nextArticle}
         />
         
-        <RelatedArticles articles={relatedArticles} />
+        <RelatedArticles articles={relatedArticles || []} />
         
         <Comments articleId={slug} />
       </article>

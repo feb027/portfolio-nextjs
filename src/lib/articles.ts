@@ -6,27 +6,30 @@ import { Article } from '@/types/article';
 const articlesDirectory = path.join(process.cwd(), 'content/articles');
 
 export async function getAllArticles(): Promise<Article[]> {
-  const fileNames = fs.readdirSync(articlesDirectory);
-  const articles = fileNames
-    .filter(fileName => fileName.endsWith('.mdx'))
-    .map(fileName => {
-      const slug = fileName.replace(/\.mdx$/, '');
-      const article = getArticleBySlug(slug);
-      return article;
-    })
-    .filter((article): article is Article => article !== null);
+  try {
+    const fileNames = fs.readdirSync(articlesDirectory);
+    const articles = await Promise.all(
+      fileNames
+        .filter(fileName => fileName.endsWith('.mdx'))
+        .map(async fileName => {
+          const slug = fileName.replace(/\.mdx$/, '');
+          return await getArticleBySlug(slug);
+        })
+    );
 
-  // Sort articles by date
-  return articles.sort((a, b) => {
-    if (a.date < b.date) {
-      return 1;
-    } else {
-      return -1;
-    }
-  });
+    return articles
+      .filter((article): article is Article => article !== null)
+      .sort((a, b) => {
+        if (a.date < b.date) return 1;
+        return -1;
+      });
+  } catch (error) {
+    console.error('Error getting all articles:', error);
+    return [];
+  }
 }
 
-export function getArticleBySlug(slug: string): Article | null {
+export async function getArticleBySlug(slug: string): Promise<Article | null> {
   try {
     const fullPath = path.join(articlesDirectory, `${slug}.mdx`);
     if (!fs.existsSync(fullPath)) {
@@ -36,14 +39,21 @@ export function getArticleBySlug(slug: string): Article | null {
     const fileContents = fs.readFileSync(fullPath, 'utf8');
     const { data, content } = matter(fileContents);
 
+    if (!data || !content) {
+      return null;
+    }
+
     return {
       slug,
       content,
-      title: data.title,
-      description: data.description,
-      date: data.date,
-      author: data.author,
-      tags: data.tags || [],
+      title: data.title || '',
+      description: data.description || '',
+      date: data.date || new Date().toISOString(),
+      author: {
+        name: data.author?.name || 'Anonymous',
+        image: data.author?.image,
+      },
+      tags: Array.isArray(data.tags) ? data.tags : [],
       image: data.image,
       readingTime: calculateReadingTime(content),
     };
