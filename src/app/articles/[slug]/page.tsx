@@ -141,116 +141,150 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function ArticlePage({ params }: Props) {
-  const { slug } = await params;
-  const article = await getArticleBySlug(slug);
-  const allArticles = await getAllArticles();
-  
-  if (!article) {
-    notFound();
-  }
+  try {
+    const { slug } = await params;
+    const article = await getArticleBySlug(slug);
+    const allArticles = await getAllArticles();
+    
+    if (!article) {
+      notFound();
+    }
 
-  const { content } = await compileMDX({
-    source: article.content,
-    components,
-    options: {
-      parseFrontmatter: true,
-    },
-  });
+    // Add defensive check for article content
+    if (!article.content) {
+      throw new Error('Article content is missing');
+    }
 
-  // Find prev/next articles
-  const currentIndex = allArticles.findIndex(a => a.slug === slug);
-  const prevArticle = currentIndex > 0 ? allArticles[currentIndex - 1] : null;
-  const nextArticle = currentIndex < allArticles.length - 1 ? allArticles[currentIndex + 1] : null;
+    const { content } = await compileMDX({
+      source: article.content,
+      components,
+      options: {
+        parseFrontmatter: true,
+      },
+    });
 
-  // Get related articles
-  const relatedArticles = allArticles
-    .filter(a => a.slug !== slug && a.tags?.some(tag => article.tags?.includes(tag)))
-    .slice(0, 3);
+    // Find prev/next articles with defensive checks
+    const currentIndex = Array.isArray(allArticles) 
+      ? allArticles.findIndex(a => a.slug === slug)
+      : -1;
+    
+    const prevArticle = currentIndex > 0 && Array.isArray(allArticles) 
+      ? allArticles[currentIndex - 1] 
+      : null;
+      
+    const nextArticle = currentIndex < (Array.isArray(allArticles) ? allArticles.length - 1 : -1) 
+      ? allArticles[currentIndex + 1] 
+      : null;
 
-  return (
-    <ArticleLayout>
-      <ErrorBoundary>
-        <Suspense 
-          fallback={
-            <div className="min-h-[400px] flex items-center justify-center">
-              <Loader className="w-6 h-6 text-neon-blue animate-spin" />
-            </div>
-          }
-        >
-          <article className="max-w-none">
-            {/* Article Header */}
-            <header className="mb-12 relative">
-              {article?.image && (
-                <div className="relative w-full h-[300px] sm:h-[400px] lg:h-[500px] mb-8 rounded-xl overflow-hidden">
-                  <Image
-                    src={article.image}
-                    alt={article.title}
-                    fill
-                    className="object-cover"
-                    priority
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-terminal-darker via-terminal-darker/50 to-transparent" />
-                </div>
-              )}
-              
-              <div className="relative z-10">
-                <div className="flex flex-wrap gap-2 mb-4">
-                  {article?.tags && Array.isArray(article.tags) && article.tags.map(tag => (
-                    <span
-                      key={tag}
-                      className="px-3 py-1.5 text-sm font-mono bg-neon-purple/10 text-neon-purple 
-                               rounded-full border border-neon-purple/20"
-                    >
-                      {tag}
-                    </span>
-                  ))}
-                </div>
+    // Get related articles with defensive checks
+    const relatedArticles = Array.isArray(allArticles)
+      ? allArticles
+          .filter(a => 
+            a.slug !== slug && 
+            Array.isArray(a.tags) && 
+            Array.isArray(article.tags) &&
+            a.tags.some(tag => article.tags.includes(tag))
+          )
+          .slice(0, 3)
+      : [];
 
-                <h1 className="text-3xl sm:text-4xl lg:text-5xl font-mono mb-6 text-code-white leading-tight">
-                  {article?.title}
-                </h1>
-                
-                <div className="flex flex-wrap items-center gap-6 text-code-gray">
-                  <div className="flex items-center gap-3">
-                    <div className="relative w-10 h-10 rounded-full overflow-hidden border-2 border-neon-blue/20">
-                      <Image
-                        src={article.author.image || '/default-avatar.png'}
-                        alt={article.author.name}
-                        fill
-                        className="object-cover"
-                      />
-                    </div>
-                    <div>
-                      <div className="font-mono text-sm text-code-white">{article.author.name}</div>
-                      <div className="text-xs">{formatDate(article.date)}</div>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-2 px-3 py-1.5 bg-terminal-light/5 rounded-full">
-                    <Clock className="w-4 h-4 text-neon-blue" />
-                    <span className="text-sm">{article.readingTime}</span>
-                  </div>
-                </div>
+    return (
+      <ArticleLayout>
+        <ErrorBoundary>
+          <Suspense 
+            fallback={
+              <div className="min-h-[400px] flex items-center justify-center">
+                <Loader className="w-6 h-6 text-neon-blue animate-spin" />
               </div>
-            </header>
+            }
+          >
+            <article className="max-w-none">
+              {/* Article Header */}
+              <header className="mb-12 relative">
+                {article?.image && (
+                  <div className="relative w-full h-[300px] sm:h-[400px] lg:h-[500px] mb-8 rounded-xl overflow-hidden">
+                    <Image
+                      src={article.image}
+                      alt={article.title || ''}
+                      fill
+                      className="object-cover"
+                      priority
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-terminal-darker via-terminal-darker/50 to-transparent" />
+                  </div>
+                )}
+                
+                <div className="relative z-10">
+                  <div className="flex flex-wrap gap-2 mb-4">
+                    {article?.tags && Array.isArray(article.tags) && article.tags.map(tag => (
+                      <span
+                        key={tag}
+                        className="px-3 py-1.5 text-sm font-mono bg-neon-purple/10 text-neon-purple 
+                                 rounded-full border border-neon-purple/20"
+                      >
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
 
-            {/* Article Content */}
-            <div className="article-content prose prose-invert max-w-none">
-              {content}
-            </div>
-            
-            <ShareButtons article={article} />
-            
-            <ArticleNavigation 
-              prevArticle={prevArticle}
-              nextArticle={nextArticle}
-            />
-            
-            <RelatedArticles articles={relatedArticles || []} />
-            
-            <Comments articleId={slug} />
-          </article>
-        </Suspense>
-      </ErrorBoundary>
-    </ArticleLayout>
-  );
+                  <h1 className="text-3xl sm:text-4xl lg:text-5xl font-mono mb-6 text-code-white leading-tight">
+                    {article?.title}
+                  </h1>
+                  
+                  <div className="flex flex-wrap items-center gap-6 text-code-gray">
+                    <div className="flex items-center gap-3">
+                      <div className="relative w-10 h-10 rounded-full overflow-hidden border-2 border-neon-blue/20">
+                        <Image
+                          src={article.author.image || '/default-avatar.png'}
+                          alt={article.author.name}
+                          fill
+                          className="object-cover"
+                        />
+                      </div>
+                      <div>
+                        <div className="font-mono text-sm text-code-white">{article.author.name}</div>
+                        <div className="text-xs">{formatDate(article.date)}</div>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2 px-3 py-1.5 bg-terminal-light/5 rounded-full">
+                      <Clock className="w-4 h-4 text-neon-blue" />
+                      <span className="text-sm">{article.readingTime}</span>
+                    </div>
+                  </div>
+                </div>
+              </header>
+
+              {/* Article Content */}
+              <div className="article-content prose prose-invert max-w-none">
+                {content}
+              </div>
+              
+              <ShareButtons article={article} />
+              
+              <ArticleNavigation 
+                prevArticle={prevArticle}
+                nextArticle={nextArticle}
+              />
+              
+              <RelatedArticles articles={relatedArticles} />
+              
+              <Comments articleId={slug} />
+            </article>
+          </Suspense>
+        </ErrorBoundary>
+      </ArticleLayout>
+    );
+  } catch (error) {
+    console.error('Error in ArticlePage:', error);
+    return (
+      <ArticleLayout>
+        <div className="min-h-[400px] flex items-center justify-center">
+          <div className="text-center space-y-4">
+            <h2 className="text-xl font-mono text-code-white">Failed to load article</h2>
+            <p className="text-code-gray">Please try again later</p>
+          </div>
+        </div>
+      </ArticleLayout>
+    );
+  }
 } 
