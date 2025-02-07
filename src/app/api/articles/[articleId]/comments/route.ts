@@ -28,8 +28,6 @@ const limiter = rateLimit({
   interval: 60 * 1000 // 1 minute
 });
 
-export const runtime = 'edge';
-
 export async function GET(
   _request: NextRequest,
   context: { params: Promise<{ articleId: string }> }
