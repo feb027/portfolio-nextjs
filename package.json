@@ -4,11 +4,11 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "prisma generate && next build",
+    "build": "prisma generate --engine=binary && next build",
     "start": "next start",
     "lint": "next lint",
     "postbuild": "next-sitemap",
-    "postinstall": "prisma generate"
+    "postinstall": "prisma generate --engine=binary"
   },
   "dependencies": {
     "@mdx-js/loader": "^3.1.0",
