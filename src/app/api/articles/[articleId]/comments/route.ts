@@ -5,6 +5,8 @@ import { rateLimit } from '@/lib/rate-limit';
 import { sanitizeInput } from '@/lib/sanitize';
 import { headers } from 'next/headers';
 
+export const runtime = 'nodejs';
+
 // Add this interface at the top of the file
 interface RateLimitError extends Error {
   message: string;
