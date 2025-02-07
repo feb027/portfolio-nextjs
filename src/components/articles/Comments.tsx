@@ -76,7 +76,12 @@ const Comments: FC<CommentsProps> = ({ articleId }) => {
     try {
       const response = await fetch(`/api/articles/${articleId}/comments`);
       const data = await response.json();
-      setComments(data);
+      if (Array.isArray(data)) {
+        setComments(data);
+      } else {
+        console.error('Expected an array of comments but got:', data);
+        setComments([]);
+      }
     } catch (error: unknown) {
       if (error instanceof Error) {
         console.error('Error fetching comments:', error.message);
