@@ -1,43 +1,43 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 import { z } from 'zod';
+import { rateLimit } from '@/lib/rate-limit';
+import { sanitizeInput } from '@/lib/sanitize';
+import { headers } from 'next/headers';
 
 const CommentSchema = z.object({
-  content: z.string().min(1).max(1000),
-  parentId: z.string().optional(),
+  content: z.string()
+    .min(1, "Comment cannot be empty")
+    .max(1000, "Comment is too long")
+    .transform(sanitizeInput),
+  authorName: z.string()
+    .min(1, "Name cannot be empty")
+    .max(50, "Name is too long")
+    .transform(sanitizeInput),
+  parentId: z.string().nullable().optional(),
+});
+
+// Create a rate limiter
+const limiter = rateLimit({
+  interval: 60 * 1000, // 1 minute
+  uniqueTokenPerInterval: 500
 });
 
 export async function GET(
   _request: NextRequest,
   context: { params: Promise<{ articleId: string }> }
 ) {
-  const { articleId } = await context.params;
+  const params = await context.params;
+  const articleId = params.articleId;
   
   try {
     const comments = await prisma.comment.findMany({
       where: {
         articleId,
-        parentId: null, // Only get top-level comments
+        parentId: null,
       },
       include: {
-        author: {
-          select: {
-            name: true,
-            image: true,
-          },
-        },
-        replies: {
-          include: {
-            author: {
-              select: {
-                name: true,
-                image: true,
-              },
-            },
-          },
-        },
+        replies: true,
       },
       orderBy: {
         createdAt: 'desc',
@@ -58,47 +58,68 @@ export async function POST(
   request: NextRequest,
   context: { params: Promise<{ articleId: string }> }
 ) {
-  const { articleId } = await context.params;
-  
   try {
-    const session = await getServerSession(authOptions);
-    if (!session?.user) {
+    // Rate limiting
+    await limiter.check(request, 3, 'COMMENT_CREATE');
+
+    // Basic spam prevention
+    const headersList = await headers();
+    const userAgent = headersList.get('user-agent');
+    if (!userAgent) {
       return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 401 }
+        { error: 'Invalid request' },
+        { status: 400 }
       );
     }
 
     const json = await request.json();
-    const { content, parentId } = CommentSchema.parse(json);
+    const result = CommentSchema.safeParse(json);
+
+    if (!result.success) {
+      return NextResponse.json(
+        { error: result.error.errors[0]?.message || 'Invalid data' },
+        { status: 400 }
+      );
+    }
+
+    const { content, authorName, parentId } = result.data;
+
+    // Additional content checks
+    if (
+      content.includes('http') || 
+      content.includes('www') ||
+      /[<>{}]/.test(content) || // No HTML/script tags
+      content.toLowerCase().includes('script') ||
+      // Add more spam patterns here
+      content.split(' ').some(word => word.length > 50) // Suspicious long words
+    ) {
+      return NextResponse.json(
+        { error: 'Comment contains disallowed content' },
+        { status: 400 }
+      );
+    }
 
     const comment = await prisma.comment.create({
       data: {
         content,
-        articleId,
-        authorId: session.user.id,
-        parentId,
+        articleId: sanitizeInput((await context.params).articleId),
+        authorName,
+        parentId: parentId || null,
       },
       include: {
-        author: {
-          select: {
-            name: true,
-            image: true,
-          },
-        },
+        replies: true,
       },
     });
 
     return NextResponse.json(comment);
-  } catch (error) {
-    if (error instanceof z.ZodError) {
+  } catch (error: any) {
+    if (error.message === 'Rate limit exceeded') {
       return NextResponse.json(
-        { error: 'Invalid request data' },
-        { status: 400 }
+        { error: 'Too many comments. Please wait a moment.' },
+        { status: 429 }
       );
     }
-    
-    console.error('Error creating comment:', error);
+    console.error('Server error:', error);
     return NextResponse.json(
       { error: 'Internal Server Error' },
       { status: 500 }

@@ -10,11 +10,13 @@ import { CommentType } from './Comments';
 interface CommentItemProps {
   comment: CommentType;
   onReply: () => void;
+  replies?: CommentType[];
 }
 
 const CommentItem: FC<CommentItemProps> = ({
   comment,
   onReply,
+  replies = [],
 }) => {
   return (
     <motion.div
@@ -25,8 +27,8 @@ const CommentItem: FC<CommentItemProps> = ({
       <div className="flex gap-4">
         <div className="relative w-8 h-8 rounded-full overflow-hidden flex-shrink-0">
           <Image
-            src={comment.author.image || '/default-avatar.png'}
-            alt={comment.author.name}
+            src="/default-avatar.png"
+            alt={comment.authorName}
             fill
             className="object-cover"
           />
@@ -34,7 +36,7 @@ const CommentItem: FC<CommentItemProps> = ({
         <div className="flex-grow">
           <div className="flex items-center justify-between mb-2">
             <div>
-              <span className="font-mono text-code-white">{comment.author.name}</span>
+              <span className="font-mono text-code-white">{comment.authorName}</span>
               <span className="text-xs text-code-gray ml-2">
                 {format(new Date(comment.createdAt), 'MMM d, yyyy')}
               </span>
@@ -51,6 +53,17 @@ const CommentItem: FC<CommentItemProps> = ({
           <p className="text-code-gray text-sm">{comment.content}</p>
         </div>
       </div>
+      {replies.length > 0 && (
+        <div className="ml-8 mt-4 space-y-4 border-l-2 border-terminal-border pl-4">
+          {replies.map((reply) => (
+            <CommentItem
+              key={reply.id}
+              comment={reply}
+              onReply={onReply}
+            />
+          ))}
+        </div>
+      )}
     </motion.div>
   );
 };
