@@ -428,7 +428,7 @@ const AboutSection: FC = () => {
                           </div>
                           <div className="text-code-gray">
                             <span className="text-neon-purple">age:</span>
-                            <span className="ml-2">21</span>,
+                            <span className="ml-2">20</span>,
                           </div>
                           <div className="text-code-gray">
                             <span className="text-neon-purple">education:</span>

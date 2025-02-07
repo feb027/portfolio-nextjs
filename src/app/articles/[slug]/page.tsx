@@ -11,6 +11,9 @@ import Image from 'next/image';
 import { compileMDX } from 'next-mdx-remote/rsc';
 import { Clock } from 'lucide-react';
 import CodeBlock from '@/components/articles/CodeBlock';
+import ErrorBoundary from '@/components/ErrorBoundary';
+import { Suspense } from 'react';
+import { Loader } from 'lucide-react';
 
 // MDX components configuration
 interface MDXComponentProps {
@@ -166,78 +169,88 @@ export default async function ArticlePage({ params }: Props) {
 
   return (
     <ArticleLayout>
-      <article className="max-w-none">
-        {/* Article Header */}
-        <header className="mb-12 relative">
-          {article.image && (
-            <div className="relative w-full h-[300px] sm:h-[400px] lg:h-[500px] mb-8 rounded-xl overflow-hidden">
-              <Image
-                src={article.image}
-                alt={article.title}
-                fill
-                className="object-cover"
-                priority
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-terminal-darker via-terminal-darker/50 to-transparent" />
+      <ErrorBoundary>
+        <Suspense 
+          fallback={
+            <div className="min-h-[400px] flex items-center justify-center">
+              <Loader className="w-6 h-6 text-neon-blue animate-spin" />
             </div>
-          )}
-          
-          <div className="relative z-10">
-            <div className="flex flex-wrap gap-2 mb-4">
-              {Array.isArray(article.tags) && article.tags.map(tag => (
-                <span
-                  key={tag}
-                  className="px-3 py-1.5 text-sm font-mono bg-neon-purple/10 text-neon-purple 
-                           rounded-full border border-neon-purple/20"
-                >
-                  {tag}
-                </span>
-              ))}
-            </div>
-
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-mono mb-6 text-code-white leading-tight">
-              {article.title}
-            </h1>
-            
-            <div className="flex flex-wrap items-center gap-6 text-code-gray">
-              <div className="flex items-center gap-3">
-                <div className="relative w-10 h-10 rounded-full overflow-hidden border-2 border-neon-blue/20">
+          }
+        >
+          <article className="max-w-none">
+            {/* Article Header */}
+            <header className="mb-12 relative">
+              {article?.image && (
+                <div className="relative w-full h-[300px] sm:h-[400px] lg:h-[500px] mb-8 rounded-xl overflow-hidden">
                   <Image
-                    src={article.author.image || '/default-avatar.png'}
-                    alt={article.author.name}
+                    src={article.image}
+                    alt={article.title}
                     fill
                     className="object-cover"
+                    priority
                   />
+                  <div className="absolute inset-0 bg-gradient-to-t from-terminal-darker via-terminal-darker/50 to-transparent" />
                 </div>
-                <div>
-                  <div className="font-mono text-sm text-code-white">{article.author.name}</div>
-                  <div className="text-xs">{formatDate(article.date)}</div>
+              )}
+              
+              <div className="relative z-10">
+                <div className="flex flex-wrap gap-2 mb-4">
+                  {article?.tags && Array.isArray(article.tags) && article.tags.map(tag => (
+                    <span
+                      key={tag}
+                      className="px-3 py-1.5 text-sm font-mono bg-neon-purple/10 text-neon-purple 
+                               rounded-full border border-neon-purple/20"
+                    >
+                      {tag}
+                    </span>
+                  ))}
                 </div>
-              </div>
-              <div className="flex items-center gap-2 px-3 py-1.5 bg-terminal-light/5 rounded-full">
-                <Clock className="w-4 h-4 text-neon-blue" />
-                <span className="text-sm">{article.readingTime}</span>
-              </div>
-            </div>
-          </div>
-        </header>
 
-        {/* Article Content */}
-        <div className="article-content prose prose-invert max-w-none">
-          {content}
-        </div>
-        
-        <ShareButtons article={article} />
-        
-        <ArticleNavigation 
-          prevArticle={prevArticle}
-          nextArticle={nextArticle}
-        />
-        
-        <RelatedArticles articles={relatedArticles || []} />
-        
-        <Comments articleId={slug} />
-      </article>
+                <h1 className="text-3xl sm:text-4xl lg:text-5xl font-mono mb-6 text-code-white leading-tight">
+                  {article?.title}
+                </h1>
+                
+                <div className="flex flex-wrap items-center gap-6 text-code-gray">
+                  <div className="flex items-center gap-3">
+                    <div className="relative w-10 h-10 rounded-full overflow-hidden border-2 border-neon-blue/20">
+                      <Image
+                        src={article.author.image || '/default-avatar.png'}
+                        alt={article.author.name}
+                        fill
+                        className="object-cover"
+                      />
+                    </div>
+                    <div>
+                      <div className="font-mono text-sm text-code-white">{article.author.name}</div>
+                      <div className="text-xs">{formatDate(article.date)}</div>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2 px-3 py-1.5 bg-terminal-light/5 rounded-full">
+                    <Clock className="w-4 h-4 text-neon-blue" />
+                    <span className="text-sm">{article.readingTime}</span>
+                  </div>
+                </div>
+              </div>
+            </header>
+
+            {/* Article Content */}
+            <div className="article-content prose prose-invert max-w-none">
+              {content}
+            </div>
+            
+            <ShareButtons article={article} />
+            
+            <ArticleNavigation 
+              prevArticle={prevArticle}
+              nextArticle={nextArticle}
+            />
+            
+            <RelatedArticles articles={relatedArticles || []} />
+            
+            <Comments articleId={slug} />
+          </article>
+        </Suspense>
+      </ErrorBoundary>
     </ArticleLayout>
   );
 } 

@@ -6,6 +6,7 @@ import { Article } from '@/types/article';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Calendar, ChevronRight } from 'lucide-react';
+import { formatDate } from '@/lib/formatDate';
 
 interface RelatedArticlesProps {
   articles: Article[];
@@ -50,7 +51,7 @@ const RelatedArticles: FC<RelatedArticlesProps> = ({ articles }) => {
                   <div className="flex items-center justify-between text-xs text-code-gray">
                     <span className="flex items-center gap-1">
                       <Calendar className="w-3 h-3" />
-                      {new Date(article.date).toLocaleDateString()}
+                      {formatDate(article.date)}
                     </span>
                     <motion.div 
                       className="flex items-center gap-1 text-neon-blue opacity-0 group-hover:opacity-100"
