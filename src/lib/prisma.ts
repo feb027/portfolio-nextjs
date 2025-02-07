@@ -1,11 +1,8 @@
 import { PrismaClient } from '@prisma/client';
 import { Pool } from '@neondatabase/serverless';
 import { PrismaNeon } from '@prisma/adapter-neon';
-// @ts-expect-error - ws is required by @neondatabase/serverless
-import ws from 'ws';
 
 declare global {
-  // eslint-disable-next-line no-var
   var prisma: PrismaClient | undefined;
 }
 
