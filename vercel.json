@@ -2,9 +2,5 @@
   "buildCommand": "prisma generate && next build",
   "installCommand": "npm install",
   "framework": "nextjs",
-  "regions": ["sin1"],
-  "env": {
-    "POSTGRES_PRISMA_URL": "@postgres-prisma-url",
-    "POSTGRES_URL_NON_POOLING": "@postgres-url-non-pooling"
-  }
+  "regions": ["sin1"]
 } 
