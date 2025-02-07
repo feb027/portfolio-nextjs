@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Article } from '@/types/article';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Calendar, Clock, ChevronRight, Search, Tags, Terminal } from 'lucide-react';
+import { Calendar, Clock, ChevronRight, Search, Terminal } from 'lucide-react';
 import { formatDate } from '@/lib/formatDate';
 
 interface ArticleGridProps {

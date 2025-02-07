@@ -1,12 +1,11 @@
-export function rateLimit({ interval, uniqueTokenPerInterval }: { 
+export function rateLimit({ interval }: {
   interval: number;
-  uniqueTokenPerInterval: number;
 }) {
   const tokenCache = new Map();
 
   return {
-    check: async (request: Request, limit: number, token: string) => {
-      const ip = request.headers.get('x-forwarded-for') || 'anonymous';
+    check: async (req: Request, limit: number, token: string) => {
+      const ip = req.headers.get('x-forwarded-for') || 'anonymous';
       const tokenKey = `${ip}-${token}`;
       const now = Date.now();
       const windowStart = now - interval;

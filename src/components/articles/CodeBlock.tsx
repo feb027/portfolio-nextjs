@@ -2,12 +2,32 @@
 
 import { FC } from 'react';
 
+interface PreProps {
+  children: {
+    props: {
+      children: string;
+    };
+  };
+}
+
 interface CodeBlockProps {
   children: React.ReactNode;
   className?: string;
 }
 
 const CodeBlock: FC<CodeBlockProps> = ({ children, className }) => {
+  const getCodeContent = (children: React.ReactNode): string => {
+    if (
+      children &&
+      typeof children === 'object' &&
+      'props' in (children as PreProps['children']) &&
+      'children' in (children as PreProps['children']).props
+    ) {
+      return (children as PreProps['children']).props.children;
+    }
+    return '';
+  };
+
   return (
     <div className="relative group">
       <pre 
@@ -18,7 +38,7 @@ const CodeBlock: FC<CodeBlockProps> = ({ children, className }) => {
       </pre>
       <div className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity">
         <button 
-          onClick={() => navigator.clipboard.writeText((children as any)?.props?.children || '')}
+          onClick={() => navigator.clipboard.writeText(getCodeContent(children))}
           className="px-2 py-1 text-xs font-mono text-code-gray hover:text-neon-blue
                    bg-terminal-light/10 rounded border border-terminal-border"
         >

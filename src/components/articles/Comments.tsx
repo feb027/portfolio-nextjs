@@ -14,6 +14,10 @@ export interface CommentType {
   replies: CommentType[];
 }
 
+interface CommentError {
+  error: string;
+}
+
 interface CommentsProps {
   articleId: string;
 }
@@ -73,8 +77,10 @@ const Comments: FC<CommentsProps> = ({ articleId }) => {
       const response = await fetch(`/api/articles/${articleId}/comments`);
       const data = await response.json();
       setComments(data);
-    } catch (error: any) {
-      console.error('Error fetching comments:', error);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        console.error('Error fetching comments:', error.message);
+      }
       toast.error('Failed to load comments');
     }
   }, [articleId]);
@@ -85,29 +91,10 @@ const Comments: FC<CommentsProps> = ({ articleId }) => {
 
   const handleSubmitComment = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    // Input validation warnings
     if (!newComment.trim() || !authorName.trim()) {
       setWarning({
         title: '⚠️ Missing Fields',
         description: 'Both name and comment are required.'
-      });
-      return;
-    }
-
-    // Length validation
-    if (newComment.length > 1000) {
-      setWarning({
-        title: '📝 Comment Too Long',
-        description: 'Please keep your comment under 1000 characters.'
-      });
-      return;
-    }
-    
-    if (authorName.length > 50) {
-      setWarning({
-        title: '📛 Name Too Long',
-        description: 'Please keep your name under 50 characters.'
       });
       return;
     }
@@ -126,8 +113,8 @@ const Comments: FC<CommentsProps> = ({ articleId }) => {
         }),
       });
 
-      const data = await response.json();
-      
+      const data = await response.json() as CommentError | CommentType;
+
       if (!response.ok) {
         let errorTitle = 'Error';
         let errorDescription = '';
@@ -138,13 +125,10 @@ const Comments: FC<CommentsProps> = ({ articleId }) => {
             errorDescription = 'Please wait a moment before posting again.';
             break;
           case 400:
-            if (data.error.includes('disallowed content')) {
+            if ('error' in data && data.error.includes('disallowed content')) {
               errorTitle = '🚫 Content Not Allowed';
               errorDescription = 'Your comment contains prohibited content (links, HTML, or suspicious patterns).';
-            } else if (data.error.includes('spam')) {
-              errorTitle = '🤖 Possible Spam Detected';
-              errorDescription = 'Your comment looks like spam. Please modify and try again.';
-            } else if (data.error.includes('too long')) {
+            } else if ('error' in data && data.error.includes('too long')) {
               errorTitle = '📝 Content Too Long';
               errorDescription = 'Please keep your comment under 1000 characters.';
             }
@@ -159,14 +143,14 @@ const Comments: FC<CommentsProps> = ({ articleId }) => {
             break;
           default:
             errorTitle = '❌ Error';
-            errorDescription = data.error || 'Failed to post comment';
+            errorDescription = 'error' in data ? data.error : 'Failed to post comment';
         }
 
         setWarning({ title: errorTitle, description: errorDescription });
         return;
       }
 
-      const comment = data;
+      const comment = data as CommentType;
       
       if (replyTo) {
         setComments(prevComments => 
@@ -186,7 +170,10 @@ const Comments: FC<CommentsProps> = ({ articleId }) => {
         description: 'Your comment has been added to the discussion.'
       });
       setWarning(null);
-    } catch (error: any) {
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        console.error('Error posting comment:', error.message);
+      }
       setWarning({
         title: '❌ Error',
         description: 'Failed to post comment. Please try again.'

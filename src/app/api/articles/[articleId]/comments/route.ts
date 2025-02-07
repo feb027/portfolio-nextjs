@@ -5,6 +5,12 @@ import { rateLimit } from '@/lib/rate-limit';
 import { sanitizeInput } from '@/lib/sanitize';
 import { headers } from 'next/headers';
 
+// Add this interface at the top of the file
+interface RateLimitError extends Error {
+  message: string;
+  code?: string;
+}
+
 const CommentSchema = z.object({
   content: z.string()
     .min(1, "Comment cannot be empty")
@@ -19,8 +25,7 @@ const CommentSchema = z.object({
 
 // Create a rate limiter
 const limiter = rateLimit({
-  interval: 60 * 1000, // 1 minute
-  uniqueTokenPerInterval: 500
+  interval: 60 * 1000 // 1 minute
 });
 
 export async function GET(
@@ -45,7 +50,7 @@ export async function GET(
     });
 
     return NextResponse.json(comments);
-  } catch (error) {
+  } catch (error: unknown) {
     console.error('Error fetching comments:', error);
     return NextResponse.json(
       { error: 'Internal Server Error' },
@@ -112,13 +117,18 @@ export async function POST(
     });
 
     return NextResponse.json(comment);
-  } catch (error: any) {
-    if (error.message === 'Rate limit exceeded') {
+  } catch (error: unknown) {
+    // Type guard for rate limit error
+    if (
+      error instanceof Error && 
+      (error as RateLimitError).message === 'Rate limit exceeded'
+    ) {
       return NextResponse.json(
         { error: 'Too many comments. Please wait a moment.' },
         { status: 429 }
       );
     }
+
     console.error('Server error:', error);
     return NextResponse.json(
       { error: 'Internal Server Error' },
