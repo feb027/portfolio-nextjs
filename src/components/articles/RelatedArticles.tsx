@@ -13,7 +13,7 @@ interface RelatedArticlesProps {
 }
 
 const RelatedArticles: FC<RelatedArticlesProps> = ({ articles }) => {
-  if (articles.length === 0) return null;
+  if (!articles?.length) return null;
 
   return (
     <div className="border-t border-terminal-border mt-12 pt-8">
@@ -23,7 +23,7 @@ const RelatedArticles: FC<RelatedArticlesProps> = ({ articles }) => {
       </div>
       
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {Array.isArray(articles) && articles.map((article, index) => (
+        {articles?.map((article, index) => (
           <motion.div
             key={article.slug}
             initial={{ opacity: 0, y: 20 }}

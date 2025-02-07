@@ -177,16 +177,10 @@ export default async function ArticlePage({ params }: Props) {
       : null;
 
     // Get related articles with defensive checks
-    const relatedArticles = Array.isArray(allArticles)
-      ? allArticles
-          .filter(a => 
-            a.slug !== slug && 
-            Array.isArray(a.tags) && 
-            Array.isArray(article.tags) &&
-            a.tags.some(tag => article.tags.includes(tag))
-          )
-          .slice(0, 3)
-      : [];
+    const relatedArticles = allArticles?.filter(a => 
+      a.slug !== slug && 
+      a.tags?.some(tag => article.tags?.includes(tag))
+    )?.slice(0, 3) || [];
 
     return (
       <ArticleLayout>
@@ -201,7 +195,7 @@ export default async function ArticlePage({ params }: Props) {
             <article className="max-w-none">
               {/* Article Header */}
               <header className="mb-12 relative">
-                {article?.image && (
+                {article.image ? (
                   <div className="relative w-full h-[300px] sm:h-[400px] lg:h-[500px] mb-8 rounded-xl overflow-hidden">
                     <Image
                       src={article.image}
@@ -212,7 +206,7 @@ export default async function ArticlePage({ params }: Props) {
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-terminal-darker via-terminal-darker/50 to-transparent" />
                   </div>
-                )}
+                ) : null}
                 
                 <div className="relative z-10">
                   <div className="flex flex-wrap gap-2 mb-4">
