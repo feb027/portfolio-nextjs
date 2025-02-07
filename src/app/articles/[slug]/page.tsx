@@ -184,7 +184,7 @@ export default async function ArticlePage({ params }: Props) {
           
           <div className="relative z-10">
             <div className="flex flex-wrap gap-2 mb-4">
-              {article.tags.map(tag => (
+              {Array.isArray(article.tags) && article.tags.map(tag => (
                 <span
                   key={tag}
                   className="px-3 py-1.5 text-sm font-mono bg-neon-purple/10 text-neon-purple 

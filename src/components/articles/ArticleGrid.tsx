@@ -125,7 +125,7 @@ const ArticleGrid: FC<ArticleGridProps> = ({ articles }) => {
       </div>
 
       {/* Featured Article */}
-      {filteredArticles.length > 0 && (
+      {Array.isArray(filteredArticles) && filteredArticles.length > 0 && (
         <div className="mt-16 mb-32">
           <Link href={`/articles/${filteredArticles[0].slug}`}>
             <motion.article
@@ -168,7 +168,7 @@ const ArticleGrid: FC<ArticleGridProps> = ({ articles }) => {
       {/* Article List */}
       <AnimatePresence mode="wait">
         <div className="space-y-6">
-          {filteredArticles.slice(1).map((article, index) => (
+          {Array.isArray(filteredArticles) && filteredArticles.slice(1).map((article, index) => (
             <motion.div
               key={article.slug}
               initial={{ opacity: 0, y: 20 }}
