@@ -351,23 +351,23 @@ const AboutSection: FC = () => {
                             and exploring new technologies.&quot;
                           </motion.p>
                           {/* Add Blog Button */}
-                          <div className="flex gap-3">
+                          <div className="flex gap-4 mt-6">
                             <motion.a
                               href="/blog"
-                              className="inline-flex items-center gap-2 px-4 py-2 bg-terminal-light/5 
-                                        border border-terminal-border rounded-md text-code-gray 
-                                        hover:text-neon-blue hover:border-neon-blue/30 
-                                        transition-all duration-300"
+                              className="inline-flex items-center gap-2 px-6 py-2.5 
+                                        bg-neon-blue/10 border-2 border-neon-blue/50 rounded-md 
+                                        text-neon-blue hover:bg-neon-blue/20 
+                                        transition-all duration-300 group"
                               whileHover={{ 
-                                scale: 1.05,
-                                x: 5
+                                scale: 1.02,
+                                boxShadow: '0 0 20px rgba(56,182,255,0.3)'
                               }}
-                              whileTap={{ scale: 0.95 }}
+                              whileTap={{ scale: 0.98 }}
                               initial={{ opacity: 0 }}
                               animate={{ opacity: 1 }}
                               transition={{ delay: 0.4 }}
                             >
-                              <span className="font-mono text-sm">Read My Blog</span>
+                              <span className="font-mono text-sm font-semibold">Read My Blog</span>
                               <motion.span
                                 animate={{ x: [0, 5, 0] }}
                                 transition={{ 
@@ -375,6 +375,7 @@ const AboutSection: FC = () => {
                                   repeat: Infinity,
                                   ease: "easeInOut"
                                 }}
+                                className="group-hover:translate-x-1 transition-transform"
                               >
                                 →
                               </motion.span>
@@ -383,20 +384,20 @@ const AboutSection: FC = () => {
                             {/* Add new Articles button */}
                             <motion.a
                               href="/articles"
-                              className="inline-flex items-center gap-2 px-4 py-2 bg-terminal-light/5 
-                                        border border-terminal-border rounded-md text-code-gray 
-                                        hover:text-neon-purple hover:border-neon-purple/30 
-                                        transition-all duration-300"
+                              className="inline-flex items-center gap-2 px-6 py-2.5 
+                                        bg-neon-purple/10 border-2 border-neon-purple/50 rounded-md 
+                                        text-neon-purple hover:bg-neon-purple/20 
+                                        transition-all duration-300 group"
                               whileHover={{ 
-                                scale: 1.05,
-                                x: 5
+                                scale: 1.02,
+                                boxShadow: '0 0 20px rgba(124,58,237,0.3)'
                               }}
-                              whileTap={{ scale: 0.95 }}
+                              whileTap={{ scale: 0.98 }}
                               initial={{ opacity: 0 }}
                               animate={{ opacity: 1 }}
                               transition={{ delay: 0.5 }}
                             >
-                              <span className="font-mono text-sm">Read Articles</span>
+                              <span className="font-mono text-sm font-semibold">Read Articles</span>
                               <motion.span
                                 animate={{ x: [0, 5, 0] }}
                                 transition={{ 
@@ -404,6 +405,7 @@ const AboutSection: FC = () => {
                                   repeat: Infinity,
                                   ease: "easeInOut"
                                 }}
+                                className="group-hover:translate-x-1 transition-transform"
                               >
                                 →
                               </motion.span>
