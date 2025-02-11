@@ -3,8 +3,10 @@ import { z } from 'zod';
 import { rateLimit } from '@/lib/rate-limit';
 import { sanitizeInput } from '@/lib/sanitize';
 import { headers } from 'next/headers';
-import { db } from '@/lib/db';
-import { randomUUID } from 'crypto';
+import { supabase } from '@/lib/supabase';
+
+// We can use edge runtime again since Supabase works with it
+export const runtime = 'edge';
 
 interface RateLimitError extends Error {
   message: string;
@@ -14,11 +16,11 @@ interface RateLimitError extends Error {
 interface Comment {
   id: string;
   content: string;
-  articleId: string;
-  authorName: string;
-  createdAt: string;
-  parentId: string | null;
-  userId: string | null;
+  article_id: string;
+  author_name: string;
+  created_at: string;
+  parent_id: string | null;
+  user_id: string | null;
 }
 
 interface CommentWithReplies extends Comment {
@@ -41,6 +43,11 @@ const limiter = rateLimit({
   interval: 60 * 1000
 });
 
+// Helper function to generate UUID using Web Crypto API
+function generateUUID(): string {
+  return crypto.randomUUID();
+}
+
 export async function GET(
   _request: NextRequest,
   context: { params: Promise<{ articleId: string }> }
@@ -51,18 +58,21 @@ export async function GET(
     
     console.log('Fetching comments for article:', articleId);
 
-    // Get all comments for the article
-    const comments = db.prepare(`
-      SELECT 
-        id, content, articleId, authorName, 
-        datetime(createdAt) as createdAt,
-        parentId, userId
-      FROM comments 
-      WHERE articleId = ?
-      ORDER BY createdAt DESC
-    `).all(articleId) as Comment[];
+    const { data: comments, error } = await supabase
+      .from('comments')
+      .select('*')
+      .eq('article_id', articleId)
+      .order('created_at', { ascending: false });
 
-    console.log('Found comments:', comments.length);
+    if (error) {
+      throw error;
+    }
+
+    console.log('Found comments:', comments?.length ?? 0);
+
+    if (!comments) {
+      return NextResponse.json([]);
+    }
 
     // Build the comment tree
     const commentMap = new Map<string, CommentWithReplies>();
@@ -76,8 +86,8 @@ export async function GET(
     // Second pass: build the tree structure
     comments.forEach(comment => {
       const commentWithReplies = commentMap.get(comment.id);
-      if (comment.parentId) {
-        const parentComment = commentMap.get(comment.parentId);
+      if (comment.parent_id) {
+        const parentComment = commentMap.get(comment.parent_id);
         if (parentComment && commentWithReplies) {
           parentComment.replies.push(commentWithReplies);
         }
@@ -142,13 +152,25 @@ export async function POST(
       );
     }
 
-    const id = randomUUID();
+    const id = generateUUID();
     
-    const comment = db.prepare(`
-      INSERT INTO comments (id, content, articleId, authorName, parentId)
-      VALUES (?, ?, ?, ?, ?)
-      RETURNING *
-    `).get(id, content, articleId, authorName, parentId || null) as Comment;
+    const { data: comment, error } = await supabase
+      .from('comments')
+      .insert([
+        {
+          id,
+          content,
+          article_id: articleId,
+          author_name: authorName,
+          parent_id: parentId || null,
+        }
+      ])
+      .select()
+      .single();
+
+    if (error) {
+      throw error;
+    }
 
     return NextResponse.json(comment);
   } catch (error: unknown) {

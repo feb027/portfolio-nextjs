@@ -9,8 +9,11 @@ import CommentItem from './CommentItem';
 export interface CommentType {
   id: string;
   content: string;
-  createdAt: string;
-  authorName: string;
+  article_id: string;
+  author_name: string;
+  created_at: string;
+  parent_id: string | null;
+  user_id: string | null;
   replies: CommentType[];
 }
 

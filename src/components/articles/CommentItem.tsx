@@ -4,7 +4,7 @@ import { FC } from 'react';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 import { Reply } from 'lucide-react';
-import { format } from 'date-fns';
+import { format, parseISO } from 'date-fns';
 import { CommentType } from './Comments';
 
 interface CommentItemProps {
@@ -12,6 +12,17 @@ interface CommentItemProps {
   onReply: () => void;
   replies?: CommentType[];
 }
+
+const formatDate = (dateString: string) => {
+  try {
+    // Parse ISO string to Date object
+    const date = parseISO(dateString);
+    return format(date, 'MMM d, yyyy');
+  } catch (error) {
+    console.error('Error formatting date:', dateString, error);
+    return 'Invalid date';
+  }
+};
 
 const CommentItem: FC<CommentItemProps> = ({
   comment,
@@ -28,7 +39,7 @@ const CommentItem: FC<CommentItemProps> = ({
         <div className="relative w-8 h-8 rounded-full overflow-hidden flex-shrink-0">
           <Image
             src="/default-avatar.png"
-            alt={comment.authorName}
+            alt={comment.author_name}
             fill
             className="object-cover"
           />
@@ -36,9 +47,9 @@ const CommentItem: FC<CommentItemProps> = ({
         <div className="flex-grow">
           <div className="flex items-center justify-between mb-2">
             <div>
-              <span className="font-mono text-code-white">{comment.authorName}</span>
+              <span className="font-mono text-code-white">{comment.author_name}</span>
               <span className="text-xs text-code-gray ml-2">
-                {format(new Date(comment.createdAt), 'MMM d, yyyy')}
+                {formatDate(comment.created_at)}
               </span>
             </div>
             <div className="flex gap-2">
