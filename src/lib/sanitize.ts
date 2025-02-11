@@ -1,8 +1,15 @@
-import DOMPurify from 'isomorphic-dompurify'
-
+// Simple sanitization function that works in Edge runtime
 export function sanitizeInput(input: string): string {
-  return DOMPurify.sanitize(input.trim(), {
-    ALLOWED_TAGS: [], // No HTML allowed
-    ALLOWED_ATTR: [], // No attributes allowed
-  })
+  // Remove HTML tags
+  const withoutTags = input.replace(/<[^>]*>/g, '');
+  
+  // Remove potentially dangerous characters
+  const sanitized = withoutTags
+    .replace(/[<>{}]/g, '') // Remove angle brackets and curly braces
+    .replace(/javascript:/gi, '') // Remove javascript: protocol
+    .replace(/on\w+=/gi, '') // Remove event handlers
+    .replace(/data:/gi, '') // Remove data: protocol
+    .trim();
+  
+  return sanitized;
 } 
